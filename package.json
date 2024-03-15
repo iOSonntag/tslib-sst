@@ -6,9 +6,16 @@
     "test": "sst bind vitest",
     "typecheck": "tsc -noEmit"
   },
+  "dependencies": {
+    "uuid": "^9.0.1",
+    "jose": "^4.11.1",
+    "node-jose": "^2.2.0"
+  },
   "devDependencies": {
+    "@types/uuid": "^9.0.1",
     "vitest": "^0.34.6",
     "@types/node": "^20.8.3",
+    "@types/node-jose": "^1.1.10",
     "sst": "2.29.2"
   }
 }
