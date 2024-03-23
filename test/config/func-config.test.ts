@@ -33,5 +33,5 @@ test.each([
   ],
 ])('FuncConfig.genFuncName(%s) -> %s', (value, expected) =>
 {
-  expect(FuncConfig.generateName(value)).toBe(expected)
+  expect(FuncConfig.generateFunctionPostfix(value)).toBe(expected)
 })

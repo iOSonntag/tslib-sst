@@ -1,6 +1,7 @@
-import { HandlerTypes } from 'sst/context/handler';
 import { ApiHandler } from 'sst/node/api';
-import { RestHandlerCallback, createRestHandler } from './handler/rest';
+import { RestResponse } from './models';
+import { APIGatewayProxyStructuredResultV2 } from 'aws-lambda';
+import { TriggerBase, TriggerHandler, TriggerHandlerCallback } from './handler/trigger';
 
 
 export type ApiHubConfig = {
@@ -8,9 +9,10 @@ export type ApiHubConfig = {
   region: string;
 };
 
-export type HandlerType = 'REST';
 
-export type HandlerCallback<T> = T extends 'REST' ? RestHandlerCallback : never;
+
+
+export type RestHandlerCallback = () => Promise<RestResponse>;
 
 
 export abstract class ApiHub {
@@ -37,14 +39,25 @@ export abstract class ApiHub {
     return ApiHub._config;
   }
 
-  public static handler<T extends HandlerType>(type: T, cb: HandlerCallback<T>) 
+  public static handlerREST(cb: RestHandlerCallback)
   {
-    switch (type)
+    return ApiHandler(async (event, context) =>
     {
-      case 'REST':
-        return createRestHandler(cb);
-      default:
-        throw new Error(`Handler type ${type} is not supported.`);
-    }
+      const response = await cb();
+  
+      return response;
+    });
+  }
+
+  public static handlerTRIGGER<T extends TriggerBase>(cb: TriggerHandlerCallback<T>)
+  {
+    return TriggerHandler<T>(async (event) =>
+    {
+      const response = await cb(event);
+  
+      return response;
+    });
   }
 }
+
+

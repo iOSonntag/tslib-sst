@@ -23,11 +23,32 @@ export function apply(app: App): void
     {
       if (!functionProps.handler) throw new Error('No handler defined');
 
-      const funcName = generateName(functionProps.handler);
+      const funcName = generateFunctionPostfix(functionProps.handler);
 
-      return `${app.stage}-${app.name}-${funcName}`;
+      let name = `${app.stage}-${app.name}-${funcName}`;
+
+      if (name.length > 64)
+      {
+        name = name.slice(0, 64);
+      }
+
+      return name;
     }
   });
+}
+
+export function generateName(app: App, handler: string): string
+{
+  const funcName = generateFunctionPostfix(handler);
+
+  let name = `${app.stage}-${app.name}-${funcName}`;
+
+  if (name.length > 64)
+  {
+    name = name.slice(0, 64);
+  }
+
+  return name;
 }
 
 /**
@@ -36,7 +57,7 @@ export function apply(app: App): void
  * handler: packages/functions/src/v1/customers/[idOrUsername]/games/GET.handler
  * becomes: GET-v1-customers-ID-games
  */
-export function generateName(handler: string): string
+export function generateFunctionPostfix(handler: string): string
 {
   const pathObject = path.parse(handler);
   const fileName = pathObject.name;
