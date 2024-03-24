@@ -1,11 +1,15 @@
 import { JsonResponse } from '../models';
+import { ApiResponse } from '../responses/rest-responses';
 
 
 
-export const useResponseNotImplemented = (): JsonResponse =>
+export const useResponseNotImplemented = (): ApiResponse =>
 {
   return {
-    statusCode: 501,
-    body: 'Not Implemented',
+    success: false,
+    error: {
+      code: 'NOT_IMPLEMENTED',
+      message: 'This endpoint is not implemented yet.',
+    },
   };
 }

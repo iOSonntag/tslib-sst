@@ -13,11 +13,11 @@ export type UseCognitoAuthParams = {
 }
 
 type UseCognitoAuthResultTokenInvalid = {
-  type: 'TOKEN_INVALID';
+  type: 'AUTH_INVALID';
 };
 
 type UseCognitoAuthResultTokenExpired = {
-  type: 'TOKEN_EXPIRED';
+  type: 'AUTH_TOKEN_EXPIRED';
 };
 
 type UseCognitoAuthResultSuccess = {
@@ -35,7 +35,7 @@ export const useCognitoAuth = async (params: UseCognitoAuthParams): Promise<UseC
   if (!token)
   {
     return {
-      type: 'TOKEN_INVALID'
+      type: 'AUTH_INVALID'
     };
   }
 
@@ -67,7 +67,7 @@ export const useCognitoAuth = async (params: UseCognitoAuthParams): Promise<UseC
     console.log(`Could not find a public key for key id (kid) ${header.kid}`);
 
     return {
-      type: 'TOKEN_INVALID'
+      type: 'AUTH_INVALID'
     };
   }
 
@@ -87,14 +87,14 @@ export const useCognitoAuth = async (params: UseCognitoAuthParams): Promise<UseC
     console.log(`Could not verify token: ${e}`);
 
     return {
-      type: 'TOKEN_INVALID'
+      type: 'AUTH_INVALID'
     };
   }
 
   if (current_ts > claims.exp)
   {
     return {
-      type: 'TOKEN_EXPIRED'
+      type: 'AUTH_TOKEN_EXPIRED'
     };
   }
 
@@ -113,6 +113,6 @@ export const useCognitoAuth = async (params: UseCognitoAuthParams): Promise<UseC
   console.warn(`Token was not issued for this audience`);
 
   return {
-    type: 'TOKEN_INVALID'
+    type: 'AUTH_INVALID'
   };
 }

@@ -1,4 +1,34 @@
-import { useHeader } from 'sst/node/api'
+import { useHeader, usePathParams } from 'sst/node/api'
+
+
+export const usePathId = (): string =>
+{
+  return usePathParam('id');
+}
+
+export const usePathParam = (name: string): string =>
+{
+  const value = usePathParamAllowEmpty(name);
+
+  if (!value || value === '')
+  {
+    throw new Error(`Path parameter ${name} is required.`);
+  }
+
+  return value;
+}
+
+export const usePathParamAllowEmpty = (name: string): string | undefined =>
+{
+  const value = usePathParams()[name];
+
+  if (!value || value === '')
+  {
+    return undefined;
+  }
+
+  return value;
+}
 
 
 
