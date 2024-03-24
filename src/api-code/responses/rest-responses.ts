@@ -16,6 +16,7 @@ export type ApiErrorResBase = {
   error: {
     code: string;
     message?: string;
+    details?: any;
   };
 };
 
@@ -25,10 +26,14 @@ export type ApiResponse = ApiResSimple |
   ApiResData<any> |
   ApiErrorRes;
 
-export type CommonApiResponseCode = 'NOT_IMPLEMENTED' | 
+export type CommonApiResponseCode = 'SUCCESS' |
+  'NOT_IMPLEMENTED' | 
   'FORBIDDEN';
 
 export const CommonApiResponses: Record<CommonApiResponseCode, ApiResponse> = {
+  SUCCESS: {
+    success: true,
+  },
   NOT_IMPLEMENTED: {
     success: false,
     error: {

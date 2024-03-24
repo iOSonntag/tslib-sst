@@ -80,6 +80,8 @@ export abstract class ApiHub {
           throw e;
         }
 
+        console.error('An unknown error occurred:', e);
+
         return ApiHub.config.transformers.createApiGatewayResponse(ApiHub.config.transformers.createApiResponseFromUnkownError(e));
       }
   
