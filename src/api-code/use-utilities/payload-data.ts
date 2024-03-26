@@ -36,11 +36,11 @@ export const useValidatedPayload = <T extends ZodRawShape>(zodObject: z.ZodObjec
     error: {
       code: 'INVALID_PAYLOAD',
       message: 'The payload does not match the expected schema.',
-      zod: {
-        version: ZodPackageJson.version,
-        ...response,
-      }
     },
+    zod: {
+      version: ZodPackageJson.version,
+      issues: response.error.issues,
+    }
   });
 
 }

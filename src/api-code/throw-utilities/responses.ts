@@ -1,4 +1,4 @@
-import { ApiResponse, CommonApiResponseCode, CommonApiResponses } from '../responses/rest-responses';
+import { ApiResponse, CommonApiResponseCode, CommonApiResponses } from '../responses/api-responses';
 
 
 export class ApiResponseThrowable {

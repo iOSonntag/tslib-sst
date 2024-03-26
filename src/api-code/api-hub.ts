@@ -2,7 +2,7 @@ import { ApiHandler, Response } from 'sst/node/api';
 import { ApiIssue, RestResponse } from './models';
 import { APIGatewayProxyStructuredResultV2 } from 'aws-lambda';
 import { TriggerBase, TriggerHandler, TriggerHandlerCallback } from './handler/trigger';
-import { ApiResponse, CommonApiResponseCode, CommonApiResponses } from './responses/rest-responses';
+import { ApiResponse, CommonApiResponseCode, CommonApiResponses } from './responses/api-responses';
 import { ApiResponseThrowable } from './throw-utilities/responses';
 
 

@@ -1,4 +1,4 @@
-import { ZodError } from 'zod';
+import { ZodIssue } from 'zod';
 
 
 
@@ -26,14 +26,14 @@ export type ApiZodErrorRes = ApiErrorResBase & {
   error: {
     code: 'INVALID_PAYLOAD';
     message: 'The payload does not match the expected schema.';
-    zod: {
-      version: string;
-      error: ZodError;
-    }
+  };
+  zod: {
+    version: string;
+    issues: ZodIssue[];
   };
 };
 
-export type ApiErrorRes = ApiErrorResSimple | ApiZodErrorRes;
+export type ApiErrorRes = ApiResBase | ApiErrorResBase;
 
 export type ApiResponse = ApiResSimple | 
   ApiResData<any> |
@@ -41,11 +41,19 @@ export type ApiResponse = ApiResSimple |
 
 export type CommonApiResponseCode = 'SUCCESS' |
   'NOT_IMPLEMENTED' | 
-  'FORBIDDEN';
+  'FORBIDDEN' |
+  'INTERNAL_SERVER_ERROR';
 
 export const CommonApiResponses: Record<CommonApiResponseCode, ApiResponse> = {
   SUCCESS: {
     success: true,
+  },
+  INTERNAL_SERVER_ERROR: {
+    success: false,
+    error: {
+      code: 'INTERNAL_SERVER_ERROR',
+      message: 'An internal server error occurred.',
+    },
   },
   NOT_IMPLEMENTED: {
     success: false,
