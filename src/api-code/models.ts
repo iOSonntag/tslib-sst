@@ -14,7 +14,7 @@ export type RestResponse = JsonResponse;
 
 export type ApiIssueParams = {
   message: string;
-  error: Error;
+  error: any;
 };
 /**
  * When throwing this error, the error will be logged special and an
@@ -23,7 +23,7 @@ export type ApiIssueParams = {
  */
 export class ApiIssue extends Error
 {
-  public readonly error: Error;
+  public readonly error: any;
 
   constructor(params: ApiIssueParams)
   {

@@ -1,3 +1,4 @@
+import { ZodError } from 'zod';
 
 
 
@@ -20,7 +21,19 @@ export type ApiErrorResBase = {
   };
 };
 
-export type ApiErrorRes = ApiErrorResBase & {};
+export type ApiErrorResSimple = ApiErrorResBase & {};
+export type ApiZodErrorRes = ApiErrorResBase & {
+  error: {
+    code: 'INVALID_PAYLOAD';
+    message: 'The payload does not match the expected schema.';
+    zod: {
+      version: string;
+      error: ZodError;
+    }
+  };
+};
+
+export type ApiErrorRes = ApiErrorResSimple | ApiZodErrorRes;
 
 export type ApiResponse = ApiResSimple | 
   ApiResData<any> |
