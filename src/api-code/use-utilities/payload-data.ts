@@ -60,14 +60,14 @@ export const usePathLanguageCode = (pathLocaleParamKey: string = 'locale'): stri
 
   if (split.length === 2)
   {
-    return split[0];
+    return split[0].toLowerCase();
   }
 
   split = locale.split('_');
 
   if (split.length === 2)
   {
-    return split[0];
+    return split[0].toLowerCase();
   }
 
   throw new Error(`Could not determine language code from locale ${locale}.`);
