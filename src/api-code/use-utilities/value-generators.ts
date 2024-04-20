@@ -18,3 +18,11 @@ export const genDynamoDbTtl = (expireInSeconds: number) =>
 {
   return Math.floor(Date.now() / 1000) + expireInSeconds; 
 }
+
+/**
+ * Generates a random integer between 0 and the given maximum value (excluded!)
+ */
+export const genRandomInt = (max: number) =>
+{
+  return Math.floor(Math.random() * max);
+}
