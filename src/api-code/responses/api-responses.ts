@@ -37,10 +37,13 @@ export type ApiErrorRes = ApiResBase | ApiErrorResBase;
 
 export type ApiResponse = ApiResSimple | 
   ApiResData<any> |
+  ApiErrorResSimple |
+  ApiZodErrorRes |
   ApiErrorRes;
 
 export type CommonApiResponseCode = 'SUCCESS' |
   'NOT_IMPLEMENTED' | 
+  'BAD_REQUEST' |
   'FORBIDDEN' |
   'INTERNAL_SERVER_ERROR' |
   'RESOURCE_NOT_FOUND';
@@ -61,6 +64,13 @@ export const CommonApiResponses: Record<CommonApiResponseCode, ApiResponse> = {
     error: {
       code: 'NOT_IMPLEMENTED',
       message: 'This endpoint is not implemented yet.',
+    },
+  },
+  BAD_REQUEST: {
+    success: false,
+    error: {
+      code: 'BAD_REQUEST',
+      message: 'The request was malformed or invalid.',
     },
   },
   FORBIDDEN: {
