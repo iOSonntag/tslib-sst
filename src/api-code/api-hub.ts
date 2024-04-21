@@ -2,6 +2,7 @@ import { ApiHandler, Response } from 'sst/node/api';
 import { ApiIssue, RestResponse } from './models';
 import { APIGatewayProxyStructuredResultV2 } from 'aws-lambda';
 import { TriggerBase, TriggerHandler, TriggerHandlerCallback } from './handler/trigger';
+import { ScriptHandler, ScriptHandlerCallback } from './handler/script';
 import { ApiResponse, CommonApiResponseCode, CommonApiResponses } from './responses/api-responses';
 import { ApiResponseThrowable } from './throw-utilities/responses';
 
@@ -88,9 +89,21 @@ export abstract class ApiHub {
     });
   }
 
+  // TODO: what about throwable reponses AND ApiIssues() here?
   public static handlerTRIGGER<T extends TriggerBase>(cb: TriggerHandlerCallback<T>)
   {
     return TriggerHandler<T>(async (event) =>
+    {
+      const response = await cb(event);
+  
+      return response;
+    });
+  }
+
+  // TODO: what about throwable reponses AND ApiIssues() here?
+  public static handlerSCRIPT(cb: ScriptHandlerCallback)
+  {
+    return ScriptHandler(async (event) =>
     {
       const response = await cb(event);
   
