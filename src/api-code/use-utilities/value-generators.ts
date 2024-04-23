@@ -19,6 +19,15 @@ export const genDelay = (ms: number): Promise<void> =>
 }
 
 /**
+ * Generates a new ISO string based timestamp based on the current time. 
+ * E.g. "2021-08-01T12:00:00.000Z" 
+ */
+export const genIsoTimestamp = () =>
+{
+  return new Date().toISOString();
+}
+
+/**
  * Generates a new DynamoDB TTL value based on the current time and the given expiration time.
  * @param expireInSeconds The number of seconds after which the item should expire.
  */
