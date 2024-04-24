@@ -50,7 +50,7 @@ export const useValidatedPayloadOptions = <D extends string, T extends UnionType
 
 
 
-export const useValidatedPayload = <T extends ZodRawShape>(zodObject: z.ZodType<T>) =>
+export const useValidatedPayload = <T extends ZodRawShape>(zodObject: z.ZodObject<T>) =>
 {
 
 
