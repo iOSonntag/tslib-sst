@@ -22,9 +22,9 @@ export const genDelay = (ms: number): Promise<void> =>
  * Generates a new ISO string based timestamp based on the current time. 
  * E.g. "2021-08-01T12:00:00.000Z" 
  */
-export const genIsoTimestamp = () =>
+export const genIsoTimestamp = (fromDate?: Date) =>
 {
-  return new Date().toISOString();
+  return (fromDate ?? new Date()).toISOString();
 }
 
 /**

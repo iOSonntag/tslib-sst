@@ -75,6 +75,11 @@ export abstract class ApiHub {
           return ApiHub.config.transformers.createApiGatewayResponse(e.result);
         }
 
+        if (e instanceof ApiIssue)
+        {
+          // TODO: implement notification system 
+        }
+
         if (e instanceof Response)
         {
           // rethrow and let SST handle it
