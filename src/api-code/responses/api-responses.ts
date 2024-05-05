@@ -46,7 +46,8 @@ export type CommonApiResponseCode = 'SUCCESS' |
   'BAD_REQUEST' |
   'FORBIDDEN' |
   'INTERNAL_SERVER_ERROR' |
-  'RESOURCE_NOT_FOUND';
+  'RESOURCE_NOT_FOUND' |
+  'RESOURCE_ALREADY_EXISTS';
 
 export const CommonApiResponses: Record<CommonApiResponseCode, ApiResponse> = {
   SUCCESS: {
@@ -85,6 +86,13 @@ export const CommonApiResponses: Record<CommonApiResponseCode, ApiResponse> = {
     error: {
       code: 'RESOURCE_NOT_FOUND',
       message: 'The requested resource was not found. It may have been deleted or never existed.',
+    },
+  },
+  RESOURCE_ALREADY_EXISTS: {
+    success: false,
+    error: {
+      code: 'RESOURCE_ALREADY_EXISTS',
+      message: 'The resource already exists. It cannot be created again.',
     },
   },
 };
