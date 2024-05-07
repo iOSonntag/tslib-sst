@@ -47,7 +47,9 @@ export type CommonApiResponseCode = 'SUCCESS' |
   'FORBIDDEN' |
   'INTERNAL_SERVER_ERROR' |
   'RESOURCE_NOT_FOUND' |
-  'RESOURCE_ALREADY_EXISTS';
+  'RESOURCE_ALREADY_EXISTS' |
+  'AUTH_TOKEN_EXPIRED' |
+  'AUTH_INVALID';
 
 export const CommonApiResponses: Record<CommonApiResponseCode, ApiResponse> = {
   SUCCESS: {
@@ -93,6 +95,20 @@ export const CommonApiResponses: Record<CommonApiResponseCode, ApiResponse> = {
     error: {
       code: 'RESOURCE_ALREADY_EXISTS',
       message: 'The resource already exists. It cannot be created again.',
+    },
+  },
+  AUTH_TOKEN_EXPIRED: {
+    success: false,
+    error: {
+      code: 'AUTH_TOKEN_EXPIRED',
+      message: 'The authentication token has expired. Please refresh it.',
+    },
+  },
+  AUTH_INVALID: {
+    success: false,
+    error: {
+      code: 'AUTH_INVALID',
+      message: 'The authentication is invalid.',
     },
   },
 };
