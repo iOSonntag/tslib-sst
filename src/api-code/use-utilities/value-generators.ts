@@ -26,6 +26,15 @@ export const genIsoTimestamp = (fromDate?: Date) =>
 {
   return (fromDate ?? new Date()).toISOString();
 }
+/**
+ * Generates a new ISO string based timestamp based on the current time and adds
+ * a uuid v4 to it.
+ * E.g. "2021-08-01T12:00:00.000Z:123e4567-e89b-12d3-a456-426614174000"
+ */
+export const genIsoTimestampUnique = (fromDate?: Date) =>
+{
+  return `${genIsoTimestamp()}:${genUuid()}`
+}
 
 /**
  * Generates a new DynamoDB TTL value based on the current time and the given expiration time.
