@@ -50,5 +50,12 @@ export const genDynamoDbTtl = (expireInSeconds: number) =>
  */
 export const genRandomInt = (max: number) =>
 {
-  return Math.floor(Math.random() * max);
+  const randomInt = Math.floor(Math.random() * max);
+
+  if (randomInt >= max)
+  {
+    return max - 1;
+  }
+
+  return randomInt;
 }
