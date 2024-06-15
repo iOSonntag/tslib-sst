@@ -14,6 +14,16 @@ export type ApiHubConfig = {
     createApiGatewayResponse: (response: ApiResponse) => APIGatewayProxyStructuredResultV2;
     createApiResponseFromUnkownError: (error: unknown) => ApiResponse;
   },
+  events: {
+    /**
+     * Use this event to monitor the issue. 
+     * 
+     * Note: You cannot throw a diffwerent exception here, the call to this
+     * function is wrapped in a try catch and the inner error of the ApiIssue
+     * will be used for generating the response, regardless of what you do here.
+     */
+    onApiIssue: (issue: ApiIssue) => Promise<void>;
+  },
 };
 
 
@@ -58,11 +68,7 @@ export abstract class ApiHub {
 
           if (!response)
           {
-            throw new ApiIssue({
-              message: 'The response code used for a response shortcut is unknown. This is a critical issue and should never happen.',
-              // TODO: improve once exception system is in place
-              error: new Error('Unknown response code'),
-            });
+            throw new ApiIssue('The response code used for a response shortcut is unknown. This is a critical issue and should never happen.');
           }
         }
 
@@ -77,7 +83,9 @@ export abstract class ApiHub {
 
         if (e instanceof ApiIssue)
         {
-          // TODO: implement notification system 
+          await ApiHub.safelyHandleApiIsueEvent(e);
+
+          return ApiHub.config.transformers.createApiGatewayResponse(ApiHub.config.transformers.createApiResponseFromUnkownError(e.error));
         }
 
         if (e instanceof Response)
@@ -94,26 +102,68 @@ export abstract class ApiHub {
     });
   }
 
-  // TODO: what about throwable reponses AND ApiIssues() here?
   public static handlerTRIGGER<T extends TriggerBase>(cb: TriggerHandlerCallback<T>)
   {
     return TriggerHandler<T>(async (event) =>
     {
-      const response = await cb(event);
+      try
+      {
+        const response = await cb(event);
+
+        return response;
+      }
+      catch (e)
+      {
+        if (e instanceof ApiIssue)
+        {
+          await ApiHub.safelyHandleApiIsueEvent(e);
+
+          throw e.error;
+        }
+
+        throw e;
+      }
   
-      return response;
     });
   }
 
-  // TODO: what about throwable reponses AND ApiIssues() here?
   public static handlerSCRIPT(cb: ScriptHandlerCallback)
   {
     return ScriptHandler(async (event) =>
     {
-      const response = await cb(event);
-  
-      return response;
+      try
+      {
+        const response = await cb(event);
+
+        return response;
+      }
+      catch (e)
+      {
+        if (e instanceof ApiIssue)
+        {
+          await ApiHub.safelyHandleApiIsueEvent(e);
+
+          throw e.error;
+        }
+        
+        throw e;
+      }
     });
+  }
+
+
+
+
+  private static safelyHandleApiIsueEvent(issue: ApiIssue): void
+  {
+    try
+    {
+      ApiHub.config.events.onApiIssue(issue);
+    }
+    catch (e)
+    {
+      console.error('An error occurred while trying to handle an API issue:', e);
+    }
   }
 }
 

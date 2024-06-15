@@ -93,6 +93,9 @@ export const useValidatedPayload = <T extends ZodRawShape>(zodObject: z.ZodObjec
 }
 
 
+// TODO: this is completly wrong, use intel packe or something to extract
+// langauge from locale
+
 export const usePathLanguageCode = (pathLocaleParamKey: string = 'locale'): string =>
 {
   const locale = usePathLocale(pathLocaleParamKey);

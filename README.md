@@ -3,6 +3,6 @@ A small package for providing convenient methods to configure the sst framework 
 
 
 
-// TODO:
+// IMPROVEMENT:
 - add usePublicApi() call so that no auth needs to be activated explicitly
   otherwise throw
