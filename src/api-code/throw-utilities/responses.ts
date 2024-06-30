@@ -33,20 +33,30 @@ export const throwResponse = (response: ApiResponse | CommonApiResponseCode): ne
  */
 export const throwResponseIfDynamoDBConditionalCheckFailed = (e: any, response: ApiResponse | CommonApiResponseCode): never =>
 {
-  if (e instanceof ConditionalCheckFailedException)
-  {
-    throw new ApiResponseThrowable(response);
-  }
-
-  if (e instanceof ElectroError && e.cause instanceof ConditionalCheckFailedException)
-  {
-    throw new ApiResponseThrowable(response);
-  }
-
-  if (e.code === 'ConditionalCheckFailedException')
+  if (isDynamoDBConditionalCheckFailedException(e))
   {
     throw new ApiResponseThrowable(response);
   }
 
   throw e;
+}
+
+export const isDynamoDBConditionalCheckFailedException = (e: any): boolean =>
+{
+  if (e instanceof ConditionalCheckFailedException)
+  {
+    return true;
+  }
+
+  if (e instanceof ElectroError && e.cause instanceof ConditionalCheckFailedException)
+  {
+    return true;
+  }
+
+  if (e.code === 'ConditionalCheckFailedException')
+  {
+    return true;
+  }
+
+  return false;
 }
