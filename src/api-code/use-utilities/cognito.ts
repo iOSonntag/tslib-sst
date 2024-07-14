@@ -26,7 +26,7 @@ type UseCognitoAuthResultSuccess = {
   claims?: any;
 };
 
-type UseCognitoAuthResult = UseCognitoAuthResultTokenInvalid | UseCognitoAuthResultTokenExpired | UseCognitoAuthResultSuccess;
+export type UseCognitoAuthResult = UseCognitoAuthResultTokenInvalid | UseCognitoAuthResultTokenExpired | UseCognitoAuthResultSuccess;
 
 export const useCognitoAuth = async (params: UseCognitoAuthParams): Promise<UseCognitoAuthResult> =>
 {
