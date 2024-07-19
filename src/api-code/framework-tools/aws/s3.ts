@@ -2,6 +2,8 @@ import { S3Client, PutObjectCommand, ObjectCannedACL, GetObjectCommand } from '@
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Readable } from 'stream';
 
+// TODO: check all region usages, if realms support different regions
+
 export * as S3Service from './s3';
 
 const s3Client = new S3Client();
@@ -20,6 +22,7 @@ export type GenerateUploadUrlParams = {
    * Defaults to private.
    */
   access?: ObjectCannedACL;
+  region?: string;
 };
 
 export const generateUploadUrl = async (params: GenerateUploadUrlParams) =>
@@ -32,6 +35,7 @@ export const generateUploadUrl = async (params: GenerateUploadUrlParams) =>
   });
 
   const uploadUrl = await getSignedUrl(s3Client, command, {
+    signingRegion: params.region,
     expiresIn: params.expiresIn ?? 3600, 
   });
 
