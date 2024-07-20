@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, ObjectCannedACL, GetObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, ObjectCannedACL, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Readable } from 'stream';
 
@@ -124,4 +124,20 @@ const streamToBuffer = async (stream: Readable): Promise<Buffer> =>
     stream.on('error', reject);
     stream.on('end', () => resolve(Buffer.concat(chunks)));
   });
+}
+
+
+export type DeleteFileParams = {
+  bucketName: string;
+  key: string;
+};
+
+export const deleteFile = async (params: DeleteFileParams) =>
+{
+  const command = new DeleteObjectCommand({
+    Bucket: params.bucketName,
+    Key: params.key,
+  });
+
+  await s3Client.send(command);
 }
