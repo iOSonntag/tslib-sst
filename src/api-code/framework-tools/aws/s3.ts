@@ -6,6 +6,7 @@ import { Readable } from 'stream';
 
 export * as S3Service from './s3';
 
+// TODO: remove this
 const s3Client = new S3Client();
 
 export type GenerateUploadUrlParams = {
@@ -128,16 +129,34 @@ const streamToBuffer = async (stream: Readable): Promise<Buffer> =>
 
 
 export type DeleteFileParams = {
+  region: string;
   bucketName: string;
   key: string;
 };
 
 export const deleteFile = async (params: DeleteFileParams) =>
 {
+  const client = new S3Client({
+    region: params.region,
+  });
+  
   const command = new DeleteObjectCommand({
     Bucket: params.bucketName,
     Key: params.key,
   });
 
-  await s3Client.send(command);
+  try
+  {
+    await client.send(command);
+  }
+  catch (e)
+  {
+    console.error(e);
+
+    client.destroy();
+
+    throw e;
+  }
+
+  client.destroy();
 }
