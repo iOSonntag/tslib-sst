@@ -83,6 +83,7 @@ export abstract class ApiHub {
 
         if (e instanceof ApiIssue)
         {
+          console.error('An API issue occurred:', e);
           await ApiHub.safelyHandleApiIsueEvent(e);
 
           return ApiHub.config.transformers.createApiGatewayResponse(ApiHub.config.transformers.createApiResponseFromUnkownError(e.error));
