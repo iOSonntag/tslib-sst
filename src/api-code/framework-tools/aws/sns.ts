@@ -57,6 +57,84 @@ export const publishToTarget = async (params: PublishToTargetParams) =>
 
 
 
+
+export type SendPushNotificationParams = {
+  endpointArn: string;
+  region: string;
+  messageKey: string;
+  messageArgs?: string[];
+  badgeCount?: number;
+  data?: Record<string, any>;
+};
+
+export const sendPushNotification = async (params: SendPushNotificationParams) =>
+{
+  const snsClient = new SNSClient({ region: params.region });
+
+  const iosNotification: any = {
+    aps: {
+      alert: {
+        'loc-key': params.messageKey
+      },
+      sound: 'default'
+    }
+  };
+
+  const androidNotification: any = {
+    notification: {
+      body_loc_key: params.messageKey,
+      sound: 'default'
+    }
+  };
+
+  if (params.messageArgs)
+  {
+    iosNotification.aps.alert['loc-args'] = params.messageArgs;
+    androidNotification.notification.body_loc_args = params.messageArgs;
+  }
+
+  if (params.badgeCount)
+  {
+    iosNotification.aps.badge = params.badgeCount;
+  }
+
+  if (params.data)
+  {
+    iosNotification.data = params.data;
+    androidNotification.data = params.data;
+  }
+
+  const message = {
+    APNS: JSON.stringify(iosNotification),
+    APNS_SANDBOX: JSON.stringify(iosNotification),
+    GCM: JSON.stringify(androidNotification),
+  };
+
+  const paramsSns: PublishCommandInput = {
+    Message: JSON.stringify(message),
+    MessageStructure: 'json',
+    TargetArn: params.endpointArn,
+  };
+
+  try
+  {
+    await snsClient.send(new PublishCommand(paramsSns));
+  
+    snsClient.destroy();
+  }
+  catch (e)
+  {
+    console.error('sendPushNotification error', e);
+
+    snsClient.destroy();
+
+    throw e;
+  }
+}
+
+
+
+
 export type CreatePushNotificationsDeviceParams = {
   platformApplicationArn: string;
   token: string;
