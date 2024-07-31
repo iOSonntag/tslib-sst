@@ -61,6 +61,7 @@ export const publishToTarget = async (params: PublishToTargetParams) =>
 export type SendPushNotificationParams = {
   endpointArn: string;
   region: string;
+  titleKey?: string;
   messageKey: string;
   messageArgs?: string[];
   badgeCount?: number;
@@ -86,6 +87,12 @@ export const sendPushNotification = async (params: SendPushNotificationParams) =
       sound: 'default'
     }
   };
+
+  if (params.titleKey)
+  {
+    iosNotification.aps.alert['title-loc-key'] = params.titleKey;
+    androidNotification.notification.title_loc_key = params.titleKey
+  }
 
   if (params.messageArgs)
   {
