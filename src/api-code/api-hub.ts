@@ -5,6 +5,8 @@ import { TriggerBase, TriggerHandler, TriggerHandlerCallback } from './handler/t
 import { ScriptHandler, ScriptHandlerCallback } from './handler/script';
 import { ApiResponse, CommonApiResponseCode, CommonApiResponses } from './responses/api-responses';
 import { ApiResponseThrowable } from './throw-utilities/responses';
+import { Handler } from 'sst/context';
+import { StreamHandler, StreamHandlerCallback } from './handler/stream';
 
 
 export type ApiHubConfig = {
@@ -149,6 +151,32 @@ export abstract class ApiHub {
         
         throw e;
       }
+    });
+  }
+
+
+  public static handlerSTREAM<T, R>(cb: StreamHandlerCallback<T, R>)
+  {
+    return StreamHandler<T, R>(async (event) =>
+    {
+      try
+      {
+        const response = await cb(event);
+
+        return response;
+      }
+      catch (e)
+      {
+        if (e instanceof ApiIssue)
+        {
+          await ApiHub.safelyHandleApiIsueEvent(e);
+
+          throw e.error;
+        }
+
+        throw e;
+      }
+  
     });
   }
 
