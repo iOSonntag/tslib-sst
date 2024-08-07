@@ -23,6 +23,7 @@ type UseCognitoAuthResultTokenExpired = {
 type UseCognitoAuthResultSuccess = {
   type: 'SUCCESS';
   accountId: string;
+  accessToken: string;
   claims?: any;
 };
 
@@ -105,7 +106,8 @@ export const useCognitoAuth = async (params: UseCognitoAuthParams): Promise<UseC
       return {
         type: 'SUCCESS',
         accountId: claims.sub,
-        claims: claims
+        claims: claims,
+        accessToken: token
       };
     }
   }
