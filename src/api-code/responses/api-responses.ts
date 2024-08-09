@@ -49,7 +49,9 @@ export type CommonApiResponseCode = 'SUCCESS' |
   'RESOURCE_NOT_FOUND' |
   'RESOURCE_ALREADY_EXISTS' |
   'AUTH_TOKEN_EXPIRED' |
-  'AUTH_INVALID';
+  'AUTH_INVALID' |
+  'CLIENT_VERSION_INVALID' |
+  'CLIENT_VERSION_DEPRECATED';
 
 export const CommonApiResponses: Record<CommonApiResponseCode, ApiResponse> = {
   SUCCESS: {
@@ -109,6 +111,20 @@ export const CommonApiResponses: Record<CommonApiResponseCode, ApiResponse> = {
     error: {
       code: 'AUTH_INVALID',
       message: 'The authentication is invalid.',
+    },
+  },
+  CLIENT_VERSION_INVALID: {
+    success: false,
+    error: {
+      code: 'CLIENT_VERSION_INVALID',
+      message: 'The client version is invalid.',
+    },
+  },
+  CLIENT_VERSION_DEPRECATED: {
+    success: false,
+    error: {
+      code: 'CLIENT_VERSION_DEPRECATED',
+      message: 'The client version is outdated. Please update the application.',
     },
   },
 };
