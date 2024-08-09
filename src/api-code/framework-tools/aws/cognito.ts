@@ -1,4 +1,4 @@
-import { AdminInitiateAuthCommand, AdminSetUserPasswordCommand, AdminUpdateUserAttributesCommand, AliasExistsException, CognitoIdentityProviderClient, InitiateAuthCommand, NotAuthorizedException, RespondToAuthChallengeCommand, UpdateUserAttributesCommand } from '@aws-sdk/client-cognito-identity-provider';
+import { AdminInitiateAuthCommand, AdminSetUserPasswordCommand, AdminUpdateUserAttributesCommand, AliasExistsException, CognitoIdentityProviderClient, InitiateAuthCommand, NotAuthorizedException, RespondToAuthChallengeCommand, AdminDeleteUserCommand } from '@aws-sdk/client-cognito-identity-provider';
 import crypto from 'crypto';
 import { throwResponse } from '../../throw-utilities/responses';
 
@@ -174,3 +174,36 @@ export const updatePassword = async (params: UpdatePasswordParams): Promise<void
   }
 }
 
+
+export type DeleteUserParams = {
+  userPoolId: string;
+  username: string;
+  region: string;
+};
+
+export const deleteUser = async (params: DeleteUserParams): Promise<void> =>
+{
+  const client = new CognitoIdentityProviderClient({
+    region: params.region,
+  });
+
+  try
+  {
+    const deleteCommand = new AdminDeleteUserCommand({
+      UserPoolId: params.userPoolId,
+      Username: params.username,
+    });
+
+    await client.send(deleteCommand);
+
+    client.destroy();
+  }
+  catch (error)
+  {
+    client.destroy();
+
+    console.error('Failed to delete user', error);
+
+    throw error;
+  }
+}
