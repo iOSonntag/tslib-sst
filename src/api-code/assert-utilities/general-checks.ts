@@ -2,7 +2,7 @@ import { useHeader } from 'sst/node/api';
 import { throwResponse } from '../throw-utilities/responses';
 
 
-type ClientVersion = `${number}.${number}.${number}`;
+export type ClientVersion = `${number}.${number}.${number}`;
 
 export const assertMinClientVersion = (minClientVersion: ClientVersion) =>
 {
