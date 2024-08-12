@@ -6,10 +6,9 @@ import { Readable } from 'stream';
 
 export * as S3Service from './s3';
 
-// TODO: remove this
-const s3Client = new S3Client();
 
 export type GenerateUploadUrlParams = {
+  region: string;
   bucketName: string;
   key: string;
   contentType: string;
@@ -23,27 +22,38 @@ export type GenerateUploadUrlParams = {
    * Defaults to private.
    */
   access?: ObjectCannedACL;
-  region?: string;
 };
 
 export const generateUploadUrl = async (params: GenerateUploadUrlParams) =>
 {
-  const command = new PutObjectCommand({
-    Bucket: params.bucketName,
-    Key: params.key,
-    ContentType: params.contentType,
-    ACL: params.access ?? 'private',
+  const client = new S3Client({
+    region: params.region,
   });
 
-  const uploadUrl = await getSignedUrl(s3Client, command, {
-    signingRegion: params.region,
-    expiresIn: params.expiresIn ?? 3600, 
-  });
+  try
+  {
+    const command = new PutObjectCommand({
+      Bucket: params.bucketName,
+      Key: params.key,
+      ContentType: params.contentType,
+      ACL: params.access ?? 'private',
+    });
 
-  return uploadUrl;
+    const uploadUrl = await getSignedUrl(client, command, {
+      signingRegion: params.region,
+      expiresIn: params.expiresIn ?? 3600, 
+    });
+
+    return uploadUrl;
+  }
+  finally
+  {
+    client.destroy();
+  }
 };
 
 export type GenerateDownloadUrlParams = {
+  region: string;
   bucketName: string;
   key: string;
   /**
@@ -56,19 +66,31 @@ export type GenerateDownloadUrlParams = {
 
 export const generateDownloadUrl = async (params: GenerateDownloadUrlParams) =>
 {
-  const command = new GetObjectCommand({
-    Bucket: params.bucketName,
-    Key: params.key,
+  const client = new S3Client({
+    region: params.region,
   });
 
-  const downloadUrl = await getSignedUrl(s3Client, command, {
-    expiresIn: params.expiresIn ?? 3600, 
-  });
+  try
+  {
+    const command = new GetObjectCommand({
+      Bucket: params.bucketName,
+      Key: params.key,
+    });
 
-  return downloadUrl;
+    const downloadUrl = await getSignedUrl(client, command, {
+      expiresIn: params.expiresIn ?? 3600, 
+    });
+
+    return downloadUrl;
+  }
+  finally
+  {
+    client.destroy();
+  }
 };
 
 export type UploadFileParams = {
+  region: string;
   bucketName: string;
   key: string;
   file: Buffer;
@@ -82,18 +104,30 @@ export type UploadFileParams = {
 
 export const uploadFile = async (params: UploadFileParams) =>
 {
-  const command = new PutObjectCommand({
-    Bucket: params.bucketName,
-    Key: params.key,
-    Body: params.file,
-    ContentType: params.contentType,
-    ACL: params.access ?? 'private',
+  const client = new S3Client({
+    region: params.region,
   });
 
-  await s3Client.send(command);
+  try
+  {
+    const command = new PutObjectCommand({
+      Bucket: params.bucketName,
+      Key: params.key,
+      Body: params.file,
+      ContentType: params.contentType,
+      ACL: params.access ?? 'private',
+    });
+
+    await client.send(command);
+  }
+  finally
+  {
+    client.destroy();
+  }
 }
 
 export type DownloadFileParams = {
+  region: string;
   bucketName: string;
   key: string;
 };
