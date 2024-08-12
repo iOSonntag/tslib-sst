@@ -183,11 +183,11 @@ export abstract class ApiHub {
 
 
 
-  private static safelyHandleApiIsueEvent(issue: ApiIssue): void
+  private static async safelyHandleApiIsueEvent(issue: ApiIssue): Promise<void>
   {
     try
     {
-      ApiHub.config.events.onApiIssue(issue);
+      await ApiHub.config.events.onApiIssue(issue);
     }
     catch (e)
     {
