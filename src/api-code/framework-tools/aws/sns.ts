@@ -3,23 +3,31 @@ import { CreatePlatformEndpointCommand, CreatePlatformEndpointCommandInput, Dele
 
 export * as SnsService from './sns';
 
-const snsClientOld = new SNSClient();
-
 export type PublishToTopicParams = {
+  region: string;
   topicArn: string;
   subject?: string;
   message: string;
 };
-// TODO: add region to the params
+
 export const publishToTopic = async (params: PublishToTopicParams) =>
 {
+  const client = new SNSClient({ region: params.region });
+
   const paramsSns: PublishCommandInput = {
     Message: params.message,
     Subject: params.subject,
     TopicArn: params.topicArn,
   };
 
-  await snsClientOld.send(new PublishCommand(paramsSns));
+  try
+  {
+    await client.send(new PublishCommand(paramsSns));
+  }
+  finally
+  {
+    client.destroy();
+  }
 }
 
 
@@ -31,7 +39,7 @@ export type PublishToTargetParams = {
 
 export const publishToTarget = async (params: PublishToTargetParams) =>
 {
-  const snsClient = new SNSClient({ region: params.region });
+  const client = new SNSClient({ region: params.region });
 
   const paramsSns: PublishCommandInput = {
     Message: params.message,
@@ -41,17 +49,11 @@ export const publishToTarget = async (params: PublishToTargetParams) =>
 
   try
   {
-    await snsClient.send(new PublishCommand(paramsSns));
-  
-    snsClient.destroy();
+    await client.send(new PublishCommand(paramsSns));
   }
-  catch (e)
+  finally
   {
-    console.error('publishToTarget error', e);
-
-    snsClient.destroy();
-
-    throw e;
+    client.destroy();
   }
 }
 

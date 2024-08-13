@@ -2,8 +2,6 @@ import { S3Client, PutObjectCommand, ObjectCannedACL, GetObjectCommand, DeleteOb
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Readable } from 'stream';
 
-// TODO: check all region usages, if realms support different regions
-
 export * as S3Service from './s3';
 
 

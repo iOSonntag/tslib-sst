@@ -3,6 +3,7 @@ import { ZodDiscriminatedUnionOption, ZodRawShape, z } from 'zod';
 import { ApiResponseThrowable } from '../throw-utilities/responses';
 import * as ZodPackageJson from 'zod/package.json';
 import { updateZodLanguage } from '../framework-tools/zod';
+import { Locale } from '@formatjs/intl-locale'
 
 
 type UnionTypesType<D extends string> = [
@@ -92,35 +93,11 @@ export const useValidatedPayload = <T extends ZodRawShape>(zodObject: z.ZodObjec
 
 }
 
-
-// TODO: this is completly wrong, use intel packe or something to extract
-// langauge from locale
-
 export const usePathLanguageCode = (pathLocaleParamKey: string = 'locale'): string =>
 {
-  const locale = usePathLocale(pathLocaleParamKey);
-
-  // TODO: check if all languages codes are 2 digits
-  if (locale.length === 2)
-  {
-    return locale;
-  }
-
-  let split = locale.split('-');
-
-  if (split.length === 2)
-  {
-    return split[0].toLowerCase();
-  }
-
-  split = locale.split('_');
-
-  if (split.length === 2)
-  {
-    return split[0].toLowerCase();
-  }
-
-  throw new Error(`Could not determine language code from locale ${locale}.`);
+  const localeString = usePathLocale(pathLocaleParamKey);
+  const locale = new Locale(localeString)
+  return locale.language;
 }
 
 export const usePathLocale = (pathParamKey: string = 'locale'): string =>
