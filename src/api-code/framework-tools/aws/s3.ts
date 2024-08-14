@@ -132,21 +132,32 @@ export type DownloadFileParams = {
 
 export const downloadFile = async (params: DownloadFileParams) =>
 {
-  const command = new GetObjectCommand({
-    Bucket: params.bucketName,
-    Key: params.key,
+  const client = new S3Client({
+    region: params.region,
   });
 
-  const response = await s3Client.send(command);
-
-  if (!response.Body)
+  try
   {
-    throw new Error('No body in response');
-  }
+    const command = new GetObjectCommand({
+      Bucket: params.bucketName,
+      Key: params.key,
+    });
 
-  const buffer = await streamToBuffer(response.Body as Readable);
-  
-  return buffer;
+    const response = await client.send(command);
+
+    if (!response.Body)
+    {
+      throw new Error('No body in response');
+    }
+
+    const buffer = await streamToBuffer(response.Body as Readable);
+    
+    return buffer;
+  }
+  finally
+  {
+    client.destroy();
+  }
 }
 
 const streamToBuffer = async (stream: Readable): Promise<Buffer> =>
