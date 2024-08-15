@@ -1,4 +1,5 @@
 import { CreatePlatformEndpointCommand, CreatePlatformEndpointCommandInput, DeleteEndpointCommand, DeleteEndpointCommandInput, PublishCommand, PublishCommandInput, SNSClient, SetEndpointAttributesCommand, SetEndpointAttributesCommandInput, SetTopicAttributesCommandInput } from '@aws-sdk/client-sns';
+import { genUuid } from '../../use-utilities/value-generators';
 
 
 export * as SnsService from './sns';
@@ -112,6 +113,10 @@ export const sendPushNotification = async (params: SendPushNotificationParams) =
     iosNotification.data = params.data;
     androidNotification.data = params.data;
   }
+
+  // Note: This is a workaround for flutter firebase messaging plugin to work
+  // with notifications send through APNS directly.
+  iosNotification['gcm.message_id'] = genUuid();
 
   const message = {
     APNS: JSON.stringify(iosNotification),
