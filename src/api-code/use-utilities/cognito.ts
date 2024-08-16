@@ -43,21 +43,7 @@ export const useCognitoAuth = async (params: UseCognitoAuthParams): Promise<UseC
   const header = decodeProtectedHeader(token);
 
   const region = params.region ?? ApiHub.config.region;
-  const cognitoInfoUrl = `https://cognito-idp.${region}.amazonaws.com/${params.poolId}/.well-known/jwks.json`;
-
-  const response = await fetch(cognitoInfoUrl, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  });
-
-  if (!response.ok)
-  {
-    throw new Error('Failed to get Cognito info');
-  }
-
-  const jwks: any = await response.json();
+  const jwks = await fetchJWKS(region, params.poolId);
 
   const data = jwks['keys'] ?? {};
 
@@ -117,4 +103,38 @@ export const useCognitoAuth = async (params: UseCognitoAuthParams): Promise<UseC
   return {
     type: 'AUTH_INVALID'
   };
+}
+
+
+const fetchJWKS = async (region: string, poolId: string): Promise<any> =>
+{
+  for (let i = 0; i < 5; i++)
+  {
+    try
+    {
+      const cognitoInfoUrl = `https://cognito-idp.${region}.amazonaws.com/${poolId}/.well-known/jwks.json`;
+
+      const response = await fetch(cognitoInfoUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok)
+      {
+        throw new Error('Failed to get Cognito info');
+      }
+
+      return await response.json();
+    }
+    catch (e)
+    {
+      console.log(`Failed to get JWKS: ${e}`);
+
+      await new Promise((resolve) => setTimeout(resolve, 200 * (i + 1)));
+    }
+  }
+
+  throw new Error('Cognito failed to get JWKS');
 }
