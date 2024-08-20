@@ -1,4 +1,4 @@
-import { Handler } from 'sst/context';
+import { Handler } from '../sst-v2/handler';
 
 
 export type StreamHandlerCallback<T, R> = (event: T) => Promise<R>;

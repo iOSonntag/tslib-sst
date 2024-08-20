@@ -1,4 +1,4 @@
-import { useHeader, useJsonBody, usePathParams } from 'sst/node/api';
+import { useHeader, useJsonBody, usePathParams } from '../sst-v2/api';
 import { ZodDiscriminatedUnionOption, ZodRawShape, z } from 'zod';
 import { ApiResponseThrowable } from '../throw-utilities/responses';
 import * as ZodPackageJson from 'zod/package.json';

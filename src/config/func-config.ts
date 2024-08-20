@@ -1,10 +1,11 @@
+// TODO: refactor and use this file in the future
+
 export * as FuncConfig from './func-config';
 
-import { App, FunctionProps } from 'sst/constructs';
 import path from 'path';
 
 
-export function apply(app: App): void
+export function apply(app: any/*App*/): void
 {
   const isProd = app.stage === 'prod';
 
@@ -19,6 +20,7 @@ export function apply(app: App): void
     nodejs: {
       sourcemap: isProd ? false : true,
     },
+    // @ts-ignore
     functionName: ({ functionProps, stack }) => 
     {
       if (!functionProps.handler) throw new Error('No handler defined');
@@ -37,7 +39,7 @@ export function apply(app: App): void
   });
 }
 
-export function generateName(app: App, handler: string): string
+export function generateName(app: any/*App*/, handler: string): string
 {
   const funcName = generateFunctionPostfix(handler);
 

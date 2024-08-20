@@ -1,4 +1,4 @@
-import { useHeader } from 'sst/node/api';
+import { useHeader } from '../sst-v2/api';
 import { throwResponse } from '../throw-utilities/responses';
 
 
