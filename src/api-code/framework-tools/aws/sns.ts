@@ -87,7 +87,8 @@ export const sendPushNotification = async (params: SendPushNotificationParams) =
   const androidNotification: any = {
     notification: {
       body_loc_key: params.messageKey,
-      sound: 'default'
+      sound: 'default',
+      priority: 'high',
     }
   };
 
