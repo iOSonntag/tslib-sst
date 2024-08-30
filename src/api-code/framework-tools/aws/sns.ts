@@ -89,12 +89,14 @@ export const sendPushNotification = async (params: SendPushNotificationParams) =
       body_loc_key: params.messageKey,
       sound: 'default',
       priority: 'high',
-      android_channel_id: 'game_notifications'
+      android_channel_id: 'game_notifications',
+      icon: 'ic_notification' 
     },
     android: {
       notification: {
         channel_id: 'game_notifications',
-        priority: 'high'
+        priority: 'high',
+        icon: 'ic_notification'
       }
     }
   };
