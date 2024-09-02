@@ -51,7 +51,8 @@ export type CommonApiResponseCode = 'SUCCESS' |
   'AUTH_TOKEN_EXPIRED' |
   'AUTH_INVALID' |
   'CLIENT_VERSION_INVALID' |
-  'CLIENT_VERSION_DEPRECATED';
+  'CLIENT_VERSION_DEPRECATED' |
+  'CLIENT_STATE_OUTDATED';
 
 export const CommonApiResponses: Record<CommonApiResponseCode, ApiResponse> = {
   SUCCESS: {
@@ -125,6 +126,13 @@ export const CommonApiResponses: Record<CommonApiResponseCode, ApiResponse> = {
     error: {
       code: 'CLIENT_VERSION_DEPRECATED',
       message: 'The client version is outdated. Please update the application.',
+    },
+  },
+  CLIENT_STATE_OUTDATED: {
+    success: false,
+    error: {
+      code: 'CLIENT_STATE_OUTDATED',
+      message: 'The client state is outdated. Please refresh the application and try again.',
     },
   },
 };
