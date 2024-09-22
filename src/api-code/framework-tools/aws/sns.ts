@@ -1,4 +1,4 @@
-import { CreatePlatformEndpointCommand, CreatePlatformEndpointCommandInput, DeleteEndpointCommand, DeleteEndpointCommandInput, PublishCommand, PublishCommandInput, SNSClient, SetEndpointAttributesCommand, SetEndpointAttributesCommandInput, SetTopicAttributesCommandInput } from '@aws-sdk/client-sns';
+import { CreatePlatformEndpointCommand, CreatePlatformEndpointCommandInput, DeleteEndpointCommand, DeleteEndpointCommandInput, EndpointDisabledException, PublishCommand, PublishCommandInput, SNSClient, SetEndpointAttributesCommand, SetEndpointAttributesCommandInput, SetTopicAttributesCommandInput } from '@aws-sdk/client-sns';
 import { genUuid } from '../../use-utilities/value-generators';
 
 
@@ -148,10 +148,15 @@ export const sendPushNotification = async (params: SendPushNotificationParams) =
   }
   catch (e)
   {
-    console.error('sendPushNotification error', e);
-
     snsClient.destroy();
 
+    if (e instanceof EndpointDisabledException)
+    {
+      console.warn('sendPushNotification: EndpointDisabledException', e);
+      return;
+    }
+
+    console.error('sendPushNotification error', e);
     throw e;
   }
 }
