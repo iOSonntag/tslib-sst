@@ -1,5 +1,6 @@
 import { CreatePlatformEndpointCommand, CreatePlatformEndpointCommandInput, DeleteEndpointCommand, DeleteEndpointCommandInput, EndpointDisabledException, PublishCommand, PublishCommandInput, SNSClient, SetEndpointAttributesCommand, SetEndpointAttributesCommandInput, SetTopicAttributesCommandInput } from '@aws-sdk/client-sns';
 import { genUuid } from '../../use-utilities/value-generators';
+import { SSTConsole } from '../../utils/sst-console';
 
 
 export * as SnsService from './sns';
@@ -156,7 +157,7 @@ export const sendPushNotification = async (params: SendPushNotificationParams) =
       return;
     }
 
-    console.error('sendPushNotification error', e);
+    SSTConsole.logIssue('sendPushNotification error', e);
     throw e;
   }
 }
@@ -196,7 +197,7 @@ export const createPushNotificationsDevice = async (params: CreatePushNotificati
   }
   catch (e)
   {
-    console.error('createPushNotificationsDevice error', e);
+    SSTConsole.logIssue('createPushNotificationsDevice error', e);
 
     snsClient.destroy();
 
@@ -237,7 +238,7 @@ export const updatePushNotificationsDevice = async (params: UpdatePushNotificati
   }
   catch (e)
   {
-    console.error('updatePushNotificationsDevice error', e);
+    SSTConsole.logIssue('updatePushNotificationsDevice error', e);
 
     snsClient.destroy();
 
@@ -266,7 +267,7 @@ export const deletePushNotificationsDevice = async (params: DeletePushNotificati
   }
   catch (e)
   {
-    console.error('deletePushNotificationsDevice error', e);
+    SSTConsole.logIssue('deletePushNotificationsDevice error', e);
 
     snsClient.destroy();
 

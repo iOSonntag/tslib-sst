@@ -6,6 +6,7 @@ import { ScriptHandler, ScriptHandlerCallback } from './handler/script';
 import { ApiResponse, CommonApiResponseCode, CommonApiResponses } from './responses/api-responses';
 import { ApiResponseThrowable } from './throw-utilities/responses';
 import { StreamHandler, StreamHandlerCallback } from './handler/stream';
+import { SSTConsole } from './utils/sst-console';
 
 
 export type ApiHubConfig = {
@@ -84,7 +85,7 @@ export abstract class ApiHub {
 
         if (e instanceof ApiIssue)
         {
-          console.error('An API issue occurred:', e);
+          SSTConsole.logIssue('An API issue occurred:', e);
           await ApiHub.safelyHandleApiIsueEvent(e);
 
           return ApiHub.config.transformers.createApiGatewayResponse(ApiHub.config.transformers.createApiResponseFromUnkownError(e.error));
@@ -96,7 +97,7 @@ export abstract class ApiHub {
           throw e;
         }
 
-        console.error('An unknown error occurred:', e);
+        SSTConsole.logIssue('An unknown error occurred:', e);
 
         return ApiHub.config.transformers.createApiGatewayResponse(ApiHub.config.transformers.createApiResponseFromUnkownError(e));
       }
@@ -190,7 +191,7 @@ export abstract class ApiHub {
     }
     catch (e)
     {
-      console.error('An error occurred while trying to handle an API issue:', e);
+      SSTConsole.logIssue('An error occurred while trying to handle an API issue:', e);
     }
   }
 }

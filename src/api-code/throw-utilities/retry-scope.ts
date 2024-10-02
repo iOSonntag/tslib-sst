@@ -1,3 +1,4 @@
+import { SSTConsole } from '../utils/sst-console';
 
 
 
@@ -26,7 +27,7 @@ export const retryScope = async <T>(fn: () => Promise<T>, attempt: number = 1): 
       throw error.innerError;
     }
 
-    console.error(error);
+    SSTConsole.logIssue(error);
 
     if (attempt <= 5)
     {

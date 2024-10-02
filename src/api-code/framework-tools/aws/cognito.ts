@@ -1,6 +1,7 @@
 import { AdminInitiateAuthCommand, AdminSetUserPasswordCommand, AdminUpdateUserAttributesCommand, AliasExistsException, CognitoIdentityProviderClient, InitiateAuthCommand, NotAuthorizedException, RespondToAuthChallengeCommand, AdminDeleteUserCommand } from '@aws-sdk/client-cognito-identity-provider';
 import crypto from 'crypto';
 import { throwResponse } from '../../throw-utilities/responses';
+import { SSTConsole } from '../../utils/sst-console';
 
 export * as CognitoService from './cognito';
 
@@ -72,7 +73,7 @@ export const authenticate = async (params: AuthenticateParams): Promise<Authenti
       };
     }
 
-    console.error('Failed to authenticate', error);
+    SSTConsole.logIssue('Failed to authenticate', error);
 
 
     throw error;
@@ -131,7 +132,7 @@ export const updateUserEmail = async (params: UpdateUserEmailParams): Promise<vo
       throw throwResponse('RESOURCE_ALREADY_EXISTS');
     }
     
-    console.error('Failed to update email', error);
+    SSTConsole.logIssue('Failed to update email', error);
 
     throw error;
   }
@@ -168,7 +169,7 @@ export const updatePassword = async (params: UpdatePasswordParams): Promise<void
   {
     client.destroy();
 
-    console.error('Failed to update password', error);
+    SSTConsole.logIssue('Failed to update password', error);
 
     throw error;
   }
@@ -202,7 +203,7 @@ export const deleteUser = async (params: DeleteUserParams): Promise<void> =>
   {
     client.destroy();
 
-    console.error('Failed to delete user', error);
+    SSTConsole.logIssue('Failed to delete user', error);
 
     throw error;
   }

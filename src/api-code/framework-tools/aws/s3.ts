@@ -1,6 +1,7 @@
 import { S3Client, PutObjectCommand, ObjectCannedACL, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Readable } from 'stream';
+import { SSTConsole } from '../../utils/sst-console';
 
 export * as S3Service from './s3';
 
@@ -194,7 +195,7 @@ export const deleteFile = async (params: DeleteFileParams) =>
   }
   catch (e)
   {
-    console.error(e);
+    SSTConsole.logIssue(e);
 
     client.destroy();
 
