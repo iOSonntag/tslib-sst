@@ -3,7 +3,7 @@ import { ApiIssue, RestResponse } from './models';
 import { APIGatewayProxyStructuredResultV2 } from 'aws-lambda';
 import { TriggerBase, TriggerHandler, TriggerHandlerCallback } from './handler/trigger';
 import { ScriptHandler, ScriptHandlerCallback } from './handler/script';
-import { ApiResponse, CommonApiResponseCode, CommonApiResponses } from './responses/api-responses';
+import { ApiErrorResBase, ApiResponse, CommonApiResponseCode, CommonApiResponses } from './responses/api-responses';
 import { ApiResponseThrowable } from './throw-utilities/responses';
 import { StreamHandler, StreamHandlerCallback } from './handler/stream';
 import { SSTConsole } from './utils/sst-console';
@@ -25,25 +25,31 @@ export type ApiHubConfig = {
      * will be used for generating the response, regardless of what you do here.
      */
     onApiIssue: (issue: ApiIssue) => Promise<void>;
+    errorResponseShouldLogIssue: (response: ApiErrorResBase) => boolean;
   },
 };
 
 
 export type RestHandlerCallback = () => Promise<ApiResponse | CommonApiResponseCode>;
 
+export type ApiHubFunctionConfig = {
+  errorResponseShouldLogIssue?: (response: ApiErrorResBase) => boolean;
+};
 
 export abstract class ApiHub {
 
   private static _config?: ApiHubConfig;
+  private static _functionConfig?: ApiHubFunctionConfig;
 
   /**
    * Initialize the ApiHub framework. Should only be called once. The best
    * place to call this in th beginning of the main entry point file of the
    * application.
    */
-  public static init(config: ApiHubConfig): void
+  public static init(config: ApiHubConfig, functionConfig: ApiHubFunctionConfig = {}): void
   {
     ApiHub._config = config;
+    ApiHub._functionConfig = functionConfig;
   }
 
   public static get config(): ApiHubConfig
@@ -54,6 +60,16 @@ export abstract class ApiHub {
     }
 
     return ApiHub._config;
+  }
+
+  public static get functionConfig(): ApiHubFunctionConfig
+  {
+    if (!ApiHub._functionConfig)
+    {
+      throw new Error('ApiHub framework has not been initialized. Use ApiHub.init() to initialize the ApiHub framework.');
+    }
+
+    return ApiHub._functionConfig;
   }
 
   public static handlerREST(cb: RestHandlerCallback)
@@ -74,13 +90,13 @@ export abstract class ApiHub {
           }
         }
 
-        return ApiHub.config.transformers.createApiGatewayResponse(response);
+        return ApiHub.createAndLogApiGatewayResponse(response);
       }
       catch (e)
       {
         if (e instanceof ApiResponseThrowable)
         {
-          return ApiHub.config.transformers.createApiGatewayResponse(e.result);
+          return ApiHub.createAndLogApiGatewayResponse(e.result);
         }
 
         if (e instanceof ApiIssue)
@@ -88,7 +104,7 @@ export abstract class ApiHub {
           SSTConsole.logIssue('An API issue occurred:', e);
           await ApiHub.safelyHandleApiIsueEvent(e);
 
-          return ApiHub.config.transformers.createApiGatewayResponse(ApiHub.config.transformers.createApiResponseFromUnkownError(e.error));
+          return ApiHub.createAndLogApiGatewayResponse(ApiHub.config.transformers.createApiResponseFromUnkownError(e.error));
         }
 
         if (e instanceof Response)
@@ -99,10 +115,32 @@ export abstract class ApiHub {
 
         SSTConsole.logIssue('An unknown error occurred:', e);
 
-        return ApiHub.config.transformers.createApiGatewayResponse(ApiHub.config.transformers.createApiResponseFromUnkownError(e));
+        return ApiHub.createAndLogApiGatewayResponse(ApiHub.config.transformers.createApiResponseFromUnkownError(e));
       }
   
     });
+  }
+
+  private static createAndLogApiGatewayResponse(response: ApiResponse): APIGatewayProxyStructuredResultV2
+  {
+    const gatewayResponse = ApiHub.config.transformers.createApiGatewayResponse(response);
+
+    if (!response.success)
+    {
+      const shouldLogGlobal = ApiHub.config.events.errorResponseShouldLogIssue(response);
+
+      if (shouldLogGlobal)
+      {
+        const shouldLogFunction = !ApiHub.functionConfig.errorResponseShouldLogIssue ? true : ApiHub.functionConfig.errorResponseShouldLogIssue(response);
+
+        if (shouldLogFunction)
+        {
+          SSTConsole.logIssue('API ERROR', response);
+        }
+      }
+    }
+
+    return gatewayResponse;
   }
 
   public static handlerTRIGGER<T extends TriggerBase>(cb: TriggerHandlerCallback<T>)
