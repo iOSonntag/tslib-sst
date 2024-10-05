@@ -127,16 +127,24 @@ export abstract class ApiHub {
 
     if (!response.success)
     {
-      const shouldLogGlobal = ApiHub.config.events.errorResponseShouldLogIssue(response);
-
-      if (shouldLogGlobal)
+      try
       {
-        const shouldLogFunction = !ApiHub.functionConfig.errorResponseShouldLogIssue ? true : ApiHub.functionConfig.errorResponseShouldLogIssue(response);
+        const shouldLogGlobal = ApiHub.config.events.errorResponseShouldLogIssue(response);
 
-        if (shouldLogFunction)
+        if (shouldLogGlobal)
         {
-          SSTConsole.logIssue('API ERROR', response);
+          const shouldLogFunction = !ApiHub.functionConfig.errorResponseShouldLogIssue ? true : ApiHub.functionConfig.errorResponseShouldLogIssue(response);
+
+          if (shouldLogFunction)
+          {
+            SSTConsole.logIssue('API ERROR', response);
+          }
         }
+      }
+      catch (e)
+      {
+        console.log('Orginal response:', response);
+        SSTConsole.logIssue('An error occurred while trying to handle an API ERROR and checking for its issue logging status:', e);
       }
     }
 
