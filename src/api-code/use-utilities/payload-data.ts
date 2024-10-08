@@ -1,4 +1,4 @@
-import { useHeader, useJsonBody, usePathParams } from '../sst-v2/api';
+import { useHeader, useJsonBody, usePathParams, useQueryParam } from '../sst-v2/api';
 import { ZodDiscriminatedUnionOption, ZodRawShape, z } from 'zod';
 import { ApiResponseThrowable } from '../throw-utilities/responses';
 import * as ZodPackageJson from 'zod/package.json';
@@ -112,9 +112,15 @@ export const usePathId = (): string =>
   return usePathParam('id');
 }
 
-export const usePathParam = (name: string): string =>
+export const usePathParam = (name: string, fallbackToQueryParam: boolean = true): string =>
 {
-  const value = usePathParamAllowEmpty(name);
+  let value = usePathParamAllowEmpty(name);
+
+  if ((!value || value === '') && fallbackToQueryParam)
+  {
+    console.log(`Path parameter ${name} is empty. Falling back to query parameter.`);
+    value = useQueryParam(name);
+  }
 
   if (!value || value === '')
   {
