@@ -32,8 +32,12 @@ export const useValidatedPayloadOptions = <D extends string, T extends UnionType
   
     if (response.success)
     {
+      console.log('Payload:', response.data);
+
       return response.data;
     }
+
+    console.log('Invalid payload:', body);
   
     throw new ApiResponseThrowable({
       success: false,
@@ -76,8 +80,12 @@ export const useValidatedPayload = <T extends ZodRawShape>(zodObject: z.ZodObjec
 
   if (response.success)
   {
+    console.log('Payload:', response.data);
+
     return response.data;
   }
+
+  console.log('Invalid payload:', body);
 
   throw new ApiResponseThrowable({
     success: false,
@@ -127,6 +135,8 @@ export const usePathParam = (name: string, fallbackToQueryParam: boolean = true)
     throw new Error(`Path parameter ${name} is required.`);
   }
 
+  console.log(`Path parameter ${name}:`, value);
+
   return value;
 }
 
@@ -136,8 +146,12 @@ export const usePathParamAllowEmpty = (name: string): string | undefined =>
 
   if (!value || value === '')
   {
+    console.log(`Path parameter ${name} is empty.`);
+
     return undefined;
   }
+
+  console.log(`Path parameter ${name}:`, value);
 
   return value;
 }
