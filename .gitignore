@@ -11,4 +11,4 @@ node_modules
 
 /dist
 
-# /sst-env.d.ts
+/sst-env.d.ts
