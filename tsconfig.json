@@ -4,5 +4,6 @@
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "composite": true,
   },
 }
