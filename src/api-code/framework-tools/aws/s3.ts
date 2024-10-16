@@ -197,10 +197,56 @@ export const deleteFile = async (params: DeleteFileParams) =>
   {
     SSTConsole.logIssue(e);
 
-    client.destroy();
-
     throw e;
   }
+  finally
+  {
+    client.destroy();
+  }
+}
 
-  client.destroy();
+export type CopyFileParams = {
+  sourceRegion: string;
+  sourceBucketName: string;
+  sourceKey: string;
+  destRegion: string;
+  destBucketName: string;
+  destKey: string;
+  destAccess: ObjectCannedACL;
+};
+
+export const copyFile = async (params: CopyFileParams) =>
+{
+  const sourceClient = new S3Client({ region: params.sourceRegion });
+  const destClient = new S3Client({ region: params.destRegion });
+
+  try
+  {
+    const getObjectCommand = new GetObjectCommand({
+      Bucket: params.sourceBucketName,
+      Key: params.sourceKey,
+    });
+
+    const sourceObject = await sourceClient.send(getObjectCommand);
+
+    if (!sourceObject.Body)
+    {
+      throw new Error('Source object body is empty');
+    }
+
+    const putObjectCommand = new PutObjectCommand({
+      Bucket: params.destBucketName,
+      Key: params.destKey,
+      Body: sourceObject.Body,
+      ContentType: sourceObject.ContentType,
+      ACL: params.destAccess,
+    });
+    await destClient.send(putObjectCommand);
+    
+  }
+  finally
+  {
+    sourceClient.destroy();
+    destClient.destroy();
+  }
 }
