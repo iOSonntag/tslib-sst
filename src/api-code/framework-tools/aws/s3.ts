@@ -1,4 +1,5 @@
 import { S3Client, PutObjectCommand, ObjectCannedACL, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { Upload } from '@aws-sdk/lib-storage';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Readable } from 'stream';
 import { SSTConsole } from '../../utils/sst-console';
@@ -234,15 +235,18 @@ export const copyFile = async (params: CopyFileParams) =>
       throw new Error('Source object body is empty');
     }
 
-    const putObjectCommand = new PutObjectCommand({
-      Bucket: params.destBucketName,
-      Key: params.destKey,
-      Body: sourceObject.Body,
-      ContentType: sourceObject.ContentType,
-      ACL: params.destAccess,
+    const upload = new Upload({
+      client: destClient,
+      params: {
+        Bucket: params.destBucketName,
+        Key: params.destKey,
+        Body: sourceObject.Body,
+        ContentType: sourceObject.ContentType,
+        ACL: params.destAccess,
+      },
     });
-    await destClient.send(putObjectCommand);
-    
+
+    await upload.done();
   }
   finally
   {
