@@ -4,6 +4,7 @@ import { ApiResponseThrowable } from '../throw-utilities/responses';
 import * as ZodPackageJson from 'zod/package.json';
 import { updateZodLanguage } from '../framework-tools/zod';
 import { Locale } from '@formatjs/intl-locale'
+import { ApiHub } from 'src/api-code/api-hub';
 
 
 type UnionTypesType<D extends string> = [
@@ -32,12 +33,18 @@ export const useValidatedPayloadOptions = <D extends string, T extends UnionType
   
     if (response.success)
     {
-      console.log('Payload:', response.data);
+      if (!ApiHub.functionConfig.preventPayloadLogging)
+      {
+        console.log('Payload:', response.data);
+      }
 
       return response.data;
     }
 
-    console.log('Invalid payload:', body);
+    if (!ApiHub.functionConfig.preventPayloadLogging)
+    {
+      console.log('Invalid payload:', response.data);
+    }
   
     throw new ApiResponseThrowable({
       success: false,
@@ -80,12 +87,18 @@ export const useValidatedPayload = <T extends ZodRawShape>(zodObject: z.ZodObjec
 
   if (response.success)
   {
-    console.log('Payload:', response.data);
+    if (!ApiHub.functionConfig.preventPayloadLogging)
+    {
+      console.log('Payload:', response.data);
+    }
 
     return response.data;
   }
 
-  console.log('Invalid payload:', body);
+  if (!ApiHub.functionConfig.preventPayloadLogging)
+  {
+    console.log('Invalid payload:', body);
+  }
 
   throw new ApiResponseThrowable({
     success: false,
