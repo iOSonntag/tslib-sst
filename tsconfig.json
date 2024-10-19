@@ -5,6 +5,8 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "composite": true,
+    "strict": true,
+    "noEmitOnError": true,
     "baseUrl": "./",
     "rootDir": "./",
     "outDir": "dist",

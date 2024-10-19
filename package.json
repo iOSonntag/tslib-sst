@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "test": "sst bind vitest",
-    "typecheck": "tsc -noEmit"
+    "typecheck": "tsc -noEmit",
+    "build": "tsc --build tsconfig.json"
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.569.0",
