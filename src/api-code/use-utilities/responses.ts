@@ -1,5 +1,5 @@
 import { JsonResponse } from '../models';
-import { ApiResponse } from '../responses/rest-responses';
+import { ApiResponse } from '../responses/api-responses';
 
 
 
