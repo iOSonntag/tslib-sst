@@ -1,4 +1,5 @@
-import { SSTConsole } from '../utils/sst-console';
+import { Dev } from 'src/api-code/utils/dev';
+
 
 
 
@@ -27,11 +28,11 @@ export const retryScope = async <T>(fn: () => Promise<T>, attempt: number = 1): 
       throw error.innerError;
     }
 
-    SSTConsole.logIssue(error);
+    Dev.logIssue(error);
 
     if (attempt <= 5)
     {
-      console.log(`Retrying ${attempt + 1}...`);
+      Dev.log(`Retrying ${attempt + 1}...`);
       
       const random = Math.random();
       await new Promise(resolve => setTimeout(resolve, 1000 * attempt * attempt + random * 1000));

@@ -1,6 +1,6 @@
 import { CreatePlatformEndpointCommand, CreatePlatformEndpointCommandInput, DeleteEndpointCommand, DeleteEndpointCommandInput, EndpointDisabledException, PublishCommand, PublishCommandInput, SNSClient, SetEndpointAttributesCommand, SetEndpointAttributesCommandInput, SetTopicAttributesCommandInput } from '@aws-sdk/client-sns';
 import { genUuid } from '../../use-utilities/value-generators';
-import { SSTConsole } from '../../utils/sst-console';
+import { Dev } from 'src/api-code/utils/dev';
 
 
 export * as SnsService from './sns';
@@ -14,7 +14,10 @@ export type PublishToTopicParams = {
 
 export const publishToTopic = async (params: PublishToTopicParams) =>
 {
-  const client = new SNSClient({ region: params.region });
+  const client = new SNSClient({ 
+    region: params.region,
+    logger: Dev.awsLogger,
+  });
 
   const paramsSns: PublishCommandInput = {
     Message: params.message,
@@ -41,7 +44,10 @@ export type PublishToTargetParams = {
 
 export const publishToTarget = async (params: PublishToTargetParams) =>
 {
-  const client = new SNSClient({ region: params.region });
+  const client = new SNSClient({ 
+    region: params.region,
+    logger: Dev.awsLogger,
+  });
 
   const paramsSns: PublishCommandInput = {
     Message: params.message,
@@ -74,7 +80,10 @@ export type SendPushNotificationParams = {
 
 export const sendPushNotification = async (params: SendPushNotificationParams) =>
 {
-  const snsClient = new SNSClient({ region: params.region });
+  const snsClient = new SNSClient({ 
+    region: params.region,
+    logger: Dev.awsLogger,
+  });
 
   const iosNotification: any = {
     aps: {
@@ -153,11 +162,11 @@ export const sendPushNotification = async (params: SendPushNotificationParams) =
 
     if (e instanceof EndpointDisabledException)
     {
-      console.warn('sendPushNotification: EndpointDisabledException', e);
+      Dev.logWarning('sendPushNotification: EndpointDisabledException', e);
       return;
     }
 
-    SSTConsole.logIssue('sendPushNotification error', e);
+    Dev.logIssue('sendPushNotification error', e);
     throw e;
   }
 }
@@ -173,7 +182,10 @@ export type CreatePushNotificationsDeviceParams = {
 
 export const createPushNotificationsDevice = async (params: CreatePushNotificationsDeviceParams) =>
 {
-  const snsClient = new SNSClient({ region: params.region });
+  const snsClient = new SNSClient({ 
+    region: params.region,
+    logger: Dev.awsLogger,
+  });
 
   const paramsSns: CreatePlatformEndpointCommandInput = {
     PlatformApplicationArn: params.platformApplicationArn,
@@ -197,7 +209,7 @@ export const createPushNotificationsDevice = async (params: CreatePushNotificati
   }
   catch (e)
   {
-    SSTConsole.logIssue('createPushNotificationsDevice error', e);
+    Dev.logIssue('createPushNotificationsDevice error', e);
 
     snsClient.destroy();
 
@@ -220,7 +232,10 @@ export type UpdatePushNotificationsDeviceParams = {
  */
 export const updatePushNotificationsDevice = async (params: UpdatePushNotificationsDeviceParams) =>
 {
-  const snsClient = new SNSClient({ region: params.region });
+  const snsClient = new SNSClient({ 
+    region: params.region,
+    logger: Dev.awsLogger,
+  });
 
   const paramsSns: SetEndpointAttributesCommandInput = {
     EndpointArn: params.endpointArn,
@@ -238,7 +253,7 @@ export const updatePushNotificationsDevice = async (params: UpdatePushNotificati
   }
   catch (e)
   {
-    SSTConsole.logIssue('updatePushNotificationsDevice error', e);
+    Dev.logIssue('updatePushNotificationsDevice error', e);
 
     snsClient.destroy();
 
@@ -253,7 +268,10 @@ export type DeletePushNotificationsDeviceParams = {
 
 export const deletePushNotificationsDevice = async (params: DeletePushNotificationsDeviceParams) =>
 {
-  const snsClient = new SNSClient({ region: params.region });
+  const snsClient = new SNSClient({ 
+    region: params.region,
+    logger: Dev.awsLogger,
+  });
 
   const paramsSns: DeleteEndpointCommandInput = {
     EndpointArn: params.endpointArn,
@@ -267,7 +285,7 @@ export const deletePushNotificationsDevice = async (params: DeletePushNotificati
   }
   catch (e)
   {
-    SSTConsole.logIssue('deletePushNotificationsDevice error', e);
+    Dev.logIssue('deletePushNotificationsDevice error', e);
 
     snsClient.destroy();
 

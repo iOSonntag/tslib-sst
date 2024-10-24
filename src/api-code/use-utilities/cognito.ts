@@ -2,6 +2,7 @@ import { decodeProtectedHeader } from 'jose';
 import { JWK, JWS } from 'node-jose';
 import { ApiHub } from '../api-hub';
 import { useBearerToken } from './payload-data';
+import { Dev } from 'src/api-code/utils/dev';
 
 
 
@@ -51,7 +52,7 @@ export const useCognitoAuth = async (params: UseCognitoAuthParams): Promise<UseC
   
   if (!foundKey)
   {
-    console.log(`Could not find a public key for key id (kid) ${header.kid}`);
+    Dev.log(`Could not find a public key for key id (kid) ${header.kid}`);
 
     return {
       type: 'AUTH_INVALID'
@@ -71,7 +72,7 @@ export const useCognitoAuth = async (params: UseCognitoAuthParams): Promise<UseC
   }
   catch (e)
   {
-    console.log(`Could not verify token: ${e}`);
+    Dev.log(`Could not verify token: ${e}`);
 
     return {
       type: 'AUTH_INVALID'
@@ -98,7 +99,7 @@ export const useCognitoAuth = async (params: UseCognitoAuthParams): Promise<UseC
     }
   }
 
-  console.warn(`Token was not issued for this audience`);
+  Dev.logWarning(`Token was not issued for this audience`);
 
   return {
     type: 'AUTH_INVALID'
@@ -130,7 +131,7 @@ const fetchJWKS = async (region: string, poolId: string): Promise<any> =>
     }
     catch (e)
     {
-      console.log(`Failed to get JWKS: ${e}`);
+      Dev.log(`Failed to get JWKS: ${e}`);
 
       await new Promise((resolve) => setTimeout(resolve, 200 * (i + 1)));
     }

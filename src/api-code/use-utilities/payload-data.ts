@@ -5,6 +5,7 @@ import * as ZodPackageJson from 'zod/package.json';
 import { updateZodLanguage } from '../framework-tools/zod';
 import { Locale } from '@formatjs/intl-locale'
 import { ApiHub } from 'src/api-code/api-hub';
+import { Dev } from 'src/api-code/utils/dev';
 
 
 type UnionTypesType<D extends string> = [
@@ -35,7 +36,7 @@ export const useValidatedPayloadOptions = <D extends string, T extends UnionType
     {
       if (!ApiHub.functionConfig.preventPayloadLogging)
       {
-        console.log('Payload:', response.data);
+        Dev.log('Payload:', response.data);
       }
 
       return response.data;
@@ -43,7 +44,7 @@ export const useValidatedPayloadOptions = <D extends string, T extends UnionType
 
     if (!ApiHub.functionConfig.preventPayloadLogging)
     {
-      console.log('Invalid payload:', response.data);
+      Dev.log('Invalid payload:', response.data);
     }
   
     throw new ApiResponseThrowable({
@@ -89,7 +90,7 @@ export const useValidatedPayload = <T extends ZodRawShape>(zodObject: z.ZodObjec
   {
     if (!ApiHub.functionConfig.preventPayloadLogging)
     {
-      console.log('Payload:', response.data);
+      Dev.log('Payload:', response.data);
     }
 
     return response.data;
@@ -97,7 +98,7 @@ export const useValidatedPayload = <T extends ZodRawShape>(zodObject: z.ZodObjec
 
   if (!ApiHub.functionConfig.preventPayloadLogging)
   {
-    console.log('Invalid payload:', body);
+    Dev.log('Invalid payload:', body);
   }
 
   throw new ApiResponseThrowable({
@@ -139,7 +140,7 @@ export const usePathParam = (name: string, fallbackToQueryParam: boolean = true)
 
   if ((!value || value === '') && fallbackToQueryParam)
   {
-    console.log(`Path parameter ${name} is empty. Falling back to query parameter.`);
+    Dev.log(`Path parameter ${name} is empty. Falling back to query parameter.`);
     value = useQueryParam(name);
   }
 
@@ -148,7 +149,7 @@ export const usePathParam = (name: string, fallbackToQueryParam: boolean = true)
     throw new Error(`Path parameter ${name} is required.`);
   }
 
-  console.log(`Path parameter ${name}:`, value);
+  Dev.log(`Path parameter ${name}:`, value);
 
   return value;
 }
@@ -159,12 +160,12 @@ export const usePathParamAllowEmpty = (name: string): string | undefined =>
 
   if (!value || value === '')
   {
-    console.log(`Path parameter ${name} is empty.`);
+    Dev.log(`Path parameter ${name} is empty.`);
 
     return undefined;
   }
 
-  console.log(`Path parameter ${name}:`, value);
+  Dev.log(`Path parameter ${name}:`, value);
 
   return value;
 }

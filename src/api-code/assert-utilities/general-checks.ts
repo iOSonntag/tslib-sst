@@ -1,3 +1,4 @@
+import { Dev } from 'src/api-code/utils/dev';
 import { useHeader } from '../sst-v2/api';
 import { throwResponse } from '../throw-utilities/responses';
 
@@ -11,7 +12,7 @@ export const assertMinClientVersion = (minClientVersion: ClientVersion) =>
 
   if (!clientVersion)
   {
-    console.log('Client version is missing');
+    Dev.log('Client version is missing');
     throw throwResponse('CLIENT_VERSION_INVALID');
   }
 
@@ -23,14 +24,14 @@ export const assertMinClientVersion = (minClientVersion: ClientVersion) =>
   }
   catch (e)
   {
-    console.log(`Failed to parse client version '${clientVersion}'`, e);
+    Dev.log(`Failed to parse client version '${clientVersion}'`, e);
     throw throwResponse('CLIENT_VERSION_INVALID');
   }
 
 
   if (clientVersionParts.length !== 3)
   {
-    console.log(`Client version is not in the format x.y.z '${clientVersion}'`);
+    Dev.log(`Client version is not in the format x.y.z '${clientVersion}'`);
     throw throwResponse('CLIENT_VERSION_INVALID');
   }
 

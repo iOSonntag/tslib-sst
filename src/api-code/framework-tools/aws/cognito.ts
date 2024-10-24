@@ -1,7 +1,7 @@
 import { AdminInitiateAuthCommand, AdminSetUserPasswordCommand, AdminUpdateUserAttributesCommand, AliasExistsException, CognitoIdentityProviderClient, InitiateAuthCommand, NotAuthorizedException, RespondToAuthChallengeCommand, AdminDeleteUserCommand } from '@aws-sdk/client-cognito-identity-provider';
 import crypto from 'crypto';
 import { throwResponse } from '../../throw-utilities/responses';
-import { SSTConsole } from '../../utils/sst-console';
+import { Dev } from 'src/api-code/utils/dev';
 
 export * as CognitoService from './cognito';
 
@@ -23,6 +23,7 @@ export const authenticate = async (params: AuthenticateParams): Promise<Authenti
 {
   const client = new CognitoIdentityProviderClient({ 
     region: params.region,
+    logger: Dev.awsLogger
   });
 
   try
@@ -73,7 +74,7 @@ export const authenticate = async (params: AuthenticateParams): Promise<Authenti
       };
     }
 
-    SSTConsole.logIssue('Failed to authenticate', error);
+    Dev.logIssue('Failed to authenticate', error);
 
 
     throw error;
@@ -99,6 +100,7 @@ export const updateUserEmail = async (params: UpdateUserEmailParams): Promise<vo
 
   const client = new CognitoIdentityProviderClient({ 
     region: params.region,
+    logger: Dev.awsLogger
   });
 
   try
@@ -132,7 +134,7 @@ export const updateUserEmail = async (params: UpdateUserEmailParams): Promise<vo
       throw throwResponse('RESOURCE_ALREADY_EXISTS');
     }
     
-    SSTConsole.logIssue('Failed to update email', error);
+    Dev.logIssue('Failed to update email', error);
 
     throw error;
   }
@@ -150,6 +152,7 @@ export const updatePassword = async (params: UpdatePasswordParams): Promise<void
 {
   const client = new CognitoIdentityProviderClient({ 
     region: params.region,
+    logger: Dev.awsLogger
   });
 
   try
@@ -169,7 +172,7 @@ export const updatePassword = async (params: UpdatePasswordParams): Promise<void
   {
     client.destroy();
 
-    SSTConsole.logIssue('Failed to update password', error);
+    Dev.logIssue('Failed to update password', error);
 
     throw error;
   }
@@ -186,6 +189,7 @@ export const deleteUser = async (params: DeleteUserParams): Promise<void> =>
 {
   const client = new CognitoIdentityProviderClient({
     region: params.region,
+    logger: Dev.awsLogger
   });
 
   try
@@ -203,7 +207,7 @@ export const deleteUser = async (params: DeleteUserParams): Promise<void> =>
   {
     client.destroy();
 
-    SSTConsole.logIssue('Failed to delete user', error);
+    Dev.logIssue('Failed to delete user', error);
 
     throw error;
   }

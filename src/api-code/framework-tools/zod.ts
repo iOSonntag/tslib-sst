@@ -1,5 +1,6 @@
 
 import i18next from 'i18next';
+import { Dev } from 'src/api-code/utils/dev';
 import { z } from 'zod';
 import { zodI18nMap } from 'zod-i18n-map';
 
@@ -26,7 +27,7 @@ export const updateZodLanguage = (language: string) =>
 {
   if (!zodLanguagesInitialized)
   {
-    console.log('Initializing zod languages');
+    Dev.log('Initializing zod languages');
 
     i18next.init({
       lng: language,

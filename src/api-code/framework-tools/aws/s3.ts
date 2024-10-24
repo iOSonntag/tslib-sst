@@ -1,8 +1,8 @@
 import { S3Client, PutObjectCommand, ObjectCannedACL, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { Dev } from 'src/api-code/utils/dev';
 import { Readable } from 'stream';
-import { SSTConsole } from '../../utils/sst-console';
 
 export * as S3Service from './s3';
 
@@ -28,6 +28,7 @@ export const generateUploadUrl = async (params: GenerateUploadUrlParams) =>
 {
   const client = new S3Client({
     region: params.region,
+    logger: Dev.awsLogger,
   });
 
   try
@@ -68,6 +69,7 @@ export const generateDownloadUrl = async (params: GenerateDownloadUrlParams) =>
 {
   const client = new S3Client({
     region: params.region,
+    logger: Dev.awsLogger,
   });
 
   try
@@ -106,6 +108,7 @@ export const uploadFile = async (params: UploadFileParams) =>
 {
   const client = new S3Client({
     region: params.region,
+    logger: Dev.awsLogger,
   });
 
   try
@@ -136,6 +139,7 @@ export const downloadFile = async (params: DownloadFileParams) =>
 {
   const client = new S3Client({
     region: params.region,
+    logger: Dev.awsLogger,
   });
 
   try
@@ -183,6 +187,7 @@ export const deleteFile = async (params: DeleteFileParams) =>
 {
   const client = new S3Client({
     region: params.region,
+    logger: Dev.awsLogger,
   });
   
   const command = new DeleteObjectCommand({
@@ -196,7 +201,7 @@ export const deleteFile = async (params: DeleteFileParams) =>
   }
   catch (e)
   {
-    SSTConsole.logIssue(e);
+    Dev.logIssue(e);
 
     throw e;
   }
@@ -218,8 +223,14 @@ export type CopyFileParams = {
 
 export const copyFile = async (params: CopyFileParams) =>
 {
-  const sourceClient = new S3Client({ region: params.sourceRegion });
-  const destClient = new S3Client({ region: params.destRegion });
+  const sourceClient = new S3Client({ 
+    region: params.sourceRegion,
+    logger: Dev.awsLogger,
+  });
+  const destClient = new S3Client({ 
+    region: params.destRegion,
+    logger: Dev.awsLogger,
+  });
 
   try
   {

@@ -6,7 +6,7 @@ import { ScriptHandler, ScriptHandlerCallback } from './handler/script';
 import { ApiErrorResBase, ApiResponse, CommonApiResponseCode, CommonApiResponses } from './responses/api-responses';
 import { ApiResponseThrowable } from './throw-utilities/responses';
 import { StreamHandler, StreamHandlerCallback } from './handler/stream';
-import { SSTConsole } from './utils/sst-console';
+import { Dev } from 'src/api-code/utils/dev';
 
 
 export type ApiHubConfig = {
@@ -79,6 +79,8 @@ export abstract class ApiHub {
     {
       try
       {
+        Dev.clearLogs();
+
         let response = await cb();
 
         if (typeof response === 'string')
@@ -102,7 +104,7 @@ export abstract class ApiHub {
 
         if (e instanceof ApiIssue)
         {
-          SSTConsole.logIssue('An API issue occurred:', e);
+          Dev.logIssue('An API issue occurred:', e);
           await ApiHub.safelyHandleApiIsueEvent(e);
 
           return ApiHub.createAndLogApiGatewayResponse(ApiHub.config.transformers.createApiResponseFromUnkownError(e.error));
@@ -114,7 +116,7 @@ export abstract class ApiHub {
           throw e;
         }
 
-        SSTConsole.logIssue('An unknown error occurred:', e);
+        Dev.logIssue('An unknown error occurred:', e);
 
         return ApiHub.createAndLogApiGatewayResponse(ApiHub.config.transformers.createApiResponseFromUnkownError(e));
       }
@@ -138,14 +140,14 @@ export abstract class ApiHub {
 
           if (shouldLogFunction)
           {
-            SSTConsole.logIssue('API ERROR', response);
+            Dev.logIssue('API ERROR', response);
           }
         }
       }
       catch (e)
       {
-        console.log('Orginal response:', response);
-        SSTConsole.logIssue('An error occurred while trying to handle an API ERROR and checking for its issue logging status:', e);
+        Dev.log('Orginal response:', response);
+        Dev.logIssue('An error occurred while trying to handle an API ERROR and checking for its issue logging status:', e);
       }
     }
 
@@ -158,6 +160,8 @@ export abstract class ApiHub {
     {
       try
       {
+        Dev.clearLogs();
+
         const response = await cb(event);
 
         return response;
@@ -183,6 +187,8 @@ export abstract class ApiHub {
     {
       try
       {
+        Dev.clearLogs();
+
         const response = await cb(event);
 
         return response;
@@ -208,6 +214,8 @@ export abstract class ApiHub {
     {
       try
       {
+        Dev.clearLogs();
+        
         const response = await cb(event);
 
         return response;
@@ -238,7 +246,7 @@ export abstract class ApiHub {
     }
     catch (e)
     {
-      SSTConsole.logIssue('An error occurred while trying to handle an API issue:', e);
+      Dev.logIssue('An error occurred while trying to handle an API issue:', e);
     }
   }
 }
