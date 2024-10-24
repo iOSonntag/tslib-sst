@@ -65,48 +65,15 @@ export const logSilentError = (...args: any[]) =>
 
 
 
-export const logIssue = (issue: any, optionalObject?: any) =>
+export const logIssue = (...args: any[]) =>
 {
   try
   {
-    if (issue instanceof Error)
-    {
-      if (!optionalObject)
-      {
-        flush(issue);
-        return;
-      }
-  
-      const finalMessage = `${issue}\n${JSON.stringify(optionalObject, null, 2)}`;
-      flush(new Error(finalMessage));
-      return;
-    }
-  
-    if (typeof issue === 'string')
-    {
-      if (!optionalObject)
-      {
-        flush(new Error(issue));
-        return;
-      }
-  
-      const finalMessage = `${issue}\n${JSON.stringify(optionalObject, null, 2)}`;
-      flush(new Error(finalMessage));
-      return;
-    }
-
-    if (!optionalObject)
-    {
-      flush(new Error(JSON.stringify(issue, null, 2)));
-      return;
-    }
-
-    const finalMessage = `${JSON.stringify(issue, null, 2)}\n${JSON.stringify(optionalObject, null, 2)}`;
-    flush(new Error(finalMessage));
+    flush(new Error( util.format.apply(null, [...args])));
   }
   catch (error)
   {
-    flush(new Error(`${issue}\n${optionalObject}`));
+    flush(new Error('Failed to flush issue'));
   }
 }
 
