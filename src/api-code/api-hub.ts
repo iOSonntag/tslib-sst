@@ -34,7 +34,6 @@ export type RestHandlerCallback = () => Promise<ApiResponse | CommonApiResponseC
 
 export type ApiHubFunctionConfig = {
   errorResponseShouldLogIssue?: (response: ApiErrorResBase) => boolean;
-  preventPayloadLogging?: boolean;
 };
 
 export abstract class ApiHub {

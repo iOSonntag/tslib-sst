@@ -34,18 +34,12 @@ export const useValidatedPayloadOptions = <D extends string, T extends UnionType
   
     if (response.success)
     {
-      if (!ApiHub.functionConfig.preventPayloadLogging)
-      {
-        Dev.log('Payload:', response.data);
-      }
+      Dev.log('Payload:', response.data);
 
       return response.data;
     }
 
-    if (!ApiHub.functionConfig.preventPayloadLogging)
-    {
-      Dev.log('Invalid payload:', response.data);
-    }
+    Dev.log('Invalid payload:', response.data);
   
     throw new ApiResponseThrowable({
       success: false,
@@ -88,18 +82,12 @@ export const useValidatedPayload = <T extends ZodRawShape>(zodObject: z.ZodObjec
 
   if (response.success)
   {
-    if (!ApiHub.functionConfig.preventPayloadLogging)
-    {
-      Dev.log('Payload:', response.data);
-    }
+    Dev.log('Payload:', response.data);
 
     return response.data;
   }
 
-  if (!ApiHub.functionConfig.preventPayloadLogging)
-  {
-    Dev.log('Invalid payload:', body);
-  }
+  Dev.log('Invalid payload:', body);
 
   throw new ApiResponseThrowable({
     success: false,
