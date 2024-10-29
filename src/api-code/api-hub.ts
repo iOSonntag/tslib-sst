@@ -80,6 +80,25 @@ export abstract class ApiHub {
       {
         Dev.clearLogs();
 
+        try
+        {
+          Dev.log('Incoming event:', event);
+        }
+        catch (e)
+        {
+          Dev.logIssue('Error logging incoming event', e);
+        }
+
+        try
+        {
+          Dev.log('Incoming context:', context);
+        }
+        catch (e)
+        {
+          Dev.logIssue('Error logging incoming context', e);
+        }
+
+
         let response = await cb();
 
         if (typeof response === 'string')
@@ -161,6 +180,16 @@ export abstract class ApiHub {
       {
         Dev.clearLogs();
 
+        try
+        {
+          Dev.log('Incoming event:', event);
+        }
+        catch (e)
+        {
+          Dev.logIssue('Error logging incoming event', e);
+        }
+
+
         const response = await cb(event);
 
         return response;
@@ -188,6 +217,15 @@ export abstract class ApiHub {
       {
         Dev.clearLogs();
 
+        try
+        {
+          Dev.log('Incoming event:', event);
+        }
+        catch (e)
+        {
+          Dev.logIssue('Error logging incoming event', e);
+        }
+
         const response = await cb(event);
 
         return response;
@@ -214,6 +252,15 @@ export abstract class ApiHub {
       try
       {
         Dev.clearLogs();
+
+        try
+        {
+          Dev.log('Incoming event:', event);
+        }
+        catch (e)
+        {
+          Dev.logIssue('Error logging incoming event', e);
+        }
         
         const response = await cb(event);
 
