@@ -15,6 +15,51 @@ export class NoRetryError extends Error
   }
 }
 
+type ConcurrentRetryScopeOptions = {
+  onError: 'THROW_FIRST' | 'LOG_ISSUES' | 'IGNORE';
+  tasks: (() => Promise<void>)[];
+};
+
+export const concurrentRetryScope = async (options: ConcurrentRetryScopeOptions): Promise<void> =>
+{
+  const promises = options.tasks.map(task => retryScope(task));
+
+  const results = await Promise.allSettled(promises);
+
+  const failed = results.filter(result => result.status === 'rejected');
+
+  if (failed.length > 0)
+  {
+    if (options.onError === 'THROW_FIRST')
+    {
+      throw new Error(failed[0].reason);
+    }
+    else if (options.onError === 'LOG_ISSUES')
+    {
+      failed.forEach(result => Dev.logIssue(result.reason));
+    }
+    else
+    {
+      Dev.log('Failed tasks (not throwing / ignoring them):');
+      failed.forEach(result => Dev.log(result.reason));
+    }
+  }
+}
+
+export const retryScopeLogIssueNotThrow = async (fn: () => Promise<void>): Promise<void> =>
+{
+  try
+  {
+    await retryScope(fn);
+  }
+  catch (error: any)
+  {
+    Dev.logIssue(error);
+  }
+}
+
+
+
 export const retryScope = async <T>(fn: () => Promise<T>, attempt: number = 1): Promise<T> =>
 {
   try
