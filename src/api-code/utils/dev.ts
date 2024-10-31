@@ -32,7 +32,7 @@ export const log = (...args: any[]) =>
   logs.push({
     date: new Date(),
     type: 'info',
-    message: util.format.apply(null, [...args]),
+    message: createMessageFromArgs(args),
   });
 }
 
@@ -41,7 +41,7 @@ export const logWarning = (...args: any[]) =>
   logs.push({
     date: new Date(),
     type: 'warn',
-    message: util.format.apply(null, [...args]),
+    message: createMessageFromArgs(args),
   });
 }
 
@@ -50,7 +50,7 @@ export const logDebug = (...args: any[]) =>
   logs.push({
     date: new Date(),
     type: 'debug',
-    message: util.format.apply(null, [...args]),
+    message: createMessageFromArgs(args),
   });
 }
 
@@ -59,22 +59,27 @@ export const logSilentError = (...args: any[]) =>
   logs.push({
     date: new Date(),
     type: 'error',
-    message: util.format.apply(null, [...args]),
+    message: createMessageFromArgs(args),
   });
 }
-
-
 
 export const logIssue = (...args: any[]) =>
 {
   try
   {
-    flush(new Error( util.format.apply(null, [...args])));
+    flush(new Error(createMessageFromArgs(args)));
   }
   catch (error)
   {
     flush(new Error('Failed to flush issue'));
   }
+}
+
+const createMessageFromArgs = (args: any[]) =>
+{
+  const rawArgs = args.map((arg) => typeof arg !== 'object' ? arg : util.inspect(arg, { depth: 20 }));
+
+  return util.format.apply(null, rawArgs);
 }
 
 
