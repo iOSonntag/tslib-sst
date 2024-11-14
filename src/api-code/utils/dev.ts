@@ -82,9 +82,7 @@ const createMessageFromArgs = (args: any[]) =>
   return util.format.apply(null, rawArgs);
 }
 
-
-
-const flush = (error: unknown) =>
+export const flushLogs = () =>
 {
   for (const log of logs)
   {
@@ -109,8 +107,11 @@ const flush = (error: unknown) =>
       console.error('Unknown log type:', log);
     }
   }
-
-  console.error(error);
-
   logs = [];
+}
+
+const flush = (error: unknown) =>
+{
+  flushLogs();
+  console.error(error);
 }
