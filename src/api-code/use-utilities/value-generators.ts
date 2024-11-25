@@ -46,6 +46,22 @@ export const genDynamoDbTtl = (expireInSeconds: number) =>
 }
 
 /**
+ * Generates a new DynamoDB TTL value based on given expiration date.
+ */
+export const genDynamoDbTtlFromDate = (expireDate: Date) =>
+{
+  return Math.floor(expireDate.getTime() / 1000);
+}
+
+/**
+ * Generates a date in iso timestamp format from a DynamoDB TTL value.
+ */
+export const genDateFromDynamoDbTtl = (ttl: number) =>
+{
+  return ttl === -1 ? undefined : genIsoTimestamp(new Date(ttl * 1000))
+}
+
+/**
  * Generates a random integer between 0 and the given maximum value (excluded!)
  */
 export const genRandomInt = (max: number) =>
