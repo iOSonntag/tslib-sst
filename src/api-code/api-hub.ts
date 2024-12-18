@@ -29,8 +29,9 @@ export type ApiHubConfig = {
   },
 };
 
+export type HandlerApiResponse = ApiResponse | CommonApiResponseCode;
 
-export type RestHandlerCallback = () => Promise<ApiResponse | CommonApiResponseCode>;
+export type RestHandlerCallback = () => Promise<HandlerApiResponse>;
 
 export type ApiHubFunctionConfig = {
   errorResponseShouldLogIssue?: (response: ApiErrorResBase) => boolean;
