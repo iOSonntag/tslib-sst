@@ -103,9 +103,19 @@ export const useValidatedPayload = <T extends ZodRawShape>(zodObject: z.ZodObjec
 
 }
 
-export const usePathLanguageCode = (pathLocaleParamKey: string = 'locale'): string =>
+export const usePathLanguageCode = (pathLocaleParamKey: string = 'locale', fallbackLanguageCode: string = 'en'): string =>
 {
-  const localeString = usePathLocale(pathLocaleParamKey);
+  let localeString = fallbackLanguageCode;
+  
+  try
+  {
+    localeString = usePathLocale(pathLocaleParamKey);
+  }
+  catch (error)
+  {
+    Dev.logWarning('Error getting path language code:', error);
+  }
+  
   const locale = new Locale(localeString)
   return locale.language;
 }
