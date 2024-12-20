@@ -76,7 +76,7 @@ export const CommonApiResponses: Record<CommonApiResponseCode, ApiResponse> = {
     success: false,
     error: {
       code: 'BAD_REQUEST',
-      message: 'The request was malformed or invalid.',
+      message: 'The request was malformed or is invalid.',
     },
   },
   FORBIDDEN: {
