@@ -12,6 +12,7 @@ import { Dev } from 'src/api-code/utils/dev';
 export type ApiHubConfig = {
   env: string;
   region: string;
+  alwaysEmitLogs?: boolean;
   transformers: {
     createApiGatewayResponse: (response: ApiResponse) => APIGatewayProxyStructuredResultV2;
     createApiResponseFromUnkownError: (error: unknown) => ApiResponse;
@@ -51,6 +52,13 @@ export abstract class ApiHub {
   {
     ApiHub._config = config;
     ApiHub._functionConfig = functionConfig;
+
+    if (ApiHub.config.alwaysEmitLogs)
+    {
+      // the system requests that logs are always emitted. We flush the logs
+      // once in case there are any logs that were not emitted yet.
+      Dev.flushLogs();
+    }
   }
 
   public static get config(): ApiHubConfig

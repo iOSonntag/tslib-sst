@@ -1,5 +1,6 @@
 import util from 'util';
 import { Logger } from '@aws-sdk/types';
+import { ApiHub } from 'src/api-code/api-hub';
 
 export * as Dev from './dev';
 
@@ -29,6 +30,12 @@ export const clearLogs = () =>
 
 export const log = (...args: any[]) =>
 {
+  if (ApiHub.config.alwaysEmitLogs)
+  {
+    console.log(createMessageFromArgs(args));
+    return;
+  }
+
   logs.push({
     date: new Date(),
     type: 'info',
@@ -38,6 +45,12 @@ export const log = (...args: any[]) =>
 
 export const logWarning = (...args: any[]) =>
 {
+  if (ApiHub.config.alwaysEmitLogs)
+  {
+    console.warn(createMessageFromArgs(args));
+    return;
+  }
+
   logs.push({
     date: new Date(),
     type: 'warn',
@@ -47,6 +60,12 @@ export const logWarning = (...args: any[]) =>
 
 export const logDebug = (...args: any[]) =>
 {
+  if (ApiHub.config.alwaysEmitLogs)
+  {
+    console.debug(createMessageFromArgs(args));
+    return;
+  }
+
   logs.push({
     date: new Date(),
     type: 'debug',
@@ -56,6 +75,12 @@ export const logDebug = (...args: any[]) =>
 
 export const logSilentError = (...args: any[]) =>
 {
+  if (ApiHub.config.alwaysEmitLogs)
+  {
+    console.error(createMessageFromArgs(args));
+    return;
+  }
+
   logs.push({
     date: new Date(),
     type: 'error',
