@@ -30,7 +30,7 @@ export const clearLogs = () =>
 
 export const log = (...args: any[]) =>
 {
-  if (ApiHub.config.alwaysEmitLogs)
+  if (ApiHub.alwaysEmitLogs)
   {
     console.log(createMessageFromArgs(args));
     return;
@@ -45,7 +45,7 @@ export const log = (...args: any[]) =>
 
 export const logWarning = (...args: any[]) =>
 {
-  if (ApiHub.config.alwaysEmitLogs)
+  if (ApiHub.alwaysEmitLogs)
   {
     console.warn(createMessageFromArgs(args));
     return;
@@ -60,7 +60,7 @@ export const logWarning = (...args: any[]) =>
 
 export const logDebug = (...args: any[]) =>
 {
-  if (ApiHub.config.alwaysEmitLogs)
+  if (ApiHub.alwaysEmitLogs)
   {
     console.debug(createMessageFromArgs(args));
     return;
@@ -75,7 +75,7 @@ export const logDebug = (...args: any[]) =>
 
 export const logSilentError = (...args: any[]) =>
 {
-  if (ApiHub.config.alwaysEmitLogs)
+  if (ApiHub.alwaysEmitLogs)
   {
     console.error(createMessageFromArgs(args));
     return;

@@ -61,6 +61,11 @@ export abstract class ApiHub {
     }
   }
 
+  public static get alwaysEmitLogs(): boolean
+  {
+    return ApiHub._config?.alwaysEmitLogs ?? false;
+  }
+
   public static get config(): ApiHubConfig
   {
     if (!ApiHub._config)
