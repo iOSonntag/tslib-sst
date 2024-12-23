@@ -56,13 +56,17 @@ export const useValidatedPayloadOptions = <D extends string, T extends UnionType
   }
 
 
-
+/**
+ * Ensures that the request body is a valid JSON object that matches the
+ * provided Zod schema. If the payload is invalid, an error response will be
+ * thrown. The error response will contain the Zod issues.
+ * 
+ * Note: This function will automatically update the Zod language to match the
+ * language code in the api path variable `locale`. If the path variable is not
+ * available, it will default to English.
+ */
 export const useValidatedPayload = <T extends ZodRawShape>(zodObject: z.ZodObject<T>) =>
 {
-
-
-
-
   const languageCode = usePathLanguageCode();
   updateZodLanguage(languageCode);
   const body = useJsonBody();

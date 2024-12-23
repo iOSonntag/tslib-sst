@@ -73,6 +73,24 @@ export abstract class ApiHub {
     return ApiHub._functionConfig;
   }
 
+  /**
+   * Create a REST API handler to use as the entry point for an API Gateway AWS
+   * Lambda function. 
+   * 
+   * What it essentially does is wrap the handler in a try catch block and makes
+   * sure that the response is always a valid API Gateway response. It uses the
+   * ApiHubConfig to determine how to transform the response into a valid API
+   * Gateway response.
+   * 
+   * Additionally it listens for ApiResponseThrowable exceptions and returns the
+   * inner response. 
+   * 
+   * It also listens for ApiIssue exceptions and makes sure to log them for the
+   * sst console.
+   * 
+   * It also adds some logging to the Dev class to make sure that the incoming
+   * event and context are logged.
+   */
   public static handlerREST(cb: RestHandlerCallback)
   {
     return ApiHandler(async (event, context) =>
