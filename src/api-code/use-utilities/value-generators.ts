@@ -62,7 +62,7 @@ export const genDateFromDynamoDbTtl = (ttl: number) =>
 }
 
 /**
- * Generates a random integer between 0 and the given maximum value (excluded!)
+ * Generates a random integer between 0 (included) and the given maximum value (excluded!)
  */
 export const genRandomInt = (max: number) =>
 {
